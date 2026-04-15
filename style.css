@@ -17,6 +17,21 @@
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.top-bar {
+    background-color: var(--secondary);
+    color: #ffffff;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.container-top-bar {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -147,6 +162,22 @@ a {
 .dropdown-content a:hover {
     background: var(--light);
     color: var(--primary);
+}
+
+.dropdown .btn-nav {
+    background-color: #1a365d;
+    /* Bleu sombre NovaStore */
+    color: white !important;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-weight: bold;
+    border: none;
+    transition: 0.3s;
+}
+
+.dropdown .btn-nav:hover {
+    background-color: #2a4365;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* ---- FOOTER (CORRIGÉ ET BLINDÉ) ---- */
