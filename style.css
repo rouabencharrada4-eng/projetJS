@@ -214,3 +214,45 @@ footer.footer {
 .social-links a:hover .fa-facebook {
     color: #1877F2;
 }
+
+.hero-slider {
+    height: 100vh;
+    /* vh = % de la hauteur de l'écran. 60 est souvent l'idéal */
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    /* AJOUT IMPORTANT */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.slide.active {
+    opacity: 1;
+}
+
+.hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    text-align: center;
+    width: 100%;
+}

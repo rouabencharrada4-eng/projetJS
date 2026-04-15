@@ -16,7 +16,6 @@
 
     <header class="navbar">
         <div class="nav-container">
-
             <div class="logo">
                 <img src="images/logo.png" alt="Logo de NovaStore" class="logo-img">
                 Nova<strong>Store</strong>
@@ -43,58 +42,12 @@
                 <a href="#" class="btn-nav">Connexion</a>
                 <a href="#" class="btn-nav btn-primary">S'inscrire</a>
             </nav>
-
         </div>
     </header>
+    <main class="hero-slider">
+        <div class="hero-content">
 
-    <main class="container">
-        <section style="padding: 60px 0; text-align: center;">
-            <h1 class="section-title">Bienvenue sur NovaStore</h1>
-            <p style="color: var(--gray); font-size: 1.1rem; margin-top: -20px; margin-bottom: 40px;">
-                Votre supermarché en ligne, livré chez vous en un clic.
-            </p>
-
-            <div class="products-grid">
-                <div class="product-card">
-                    <div class="product-img">🥗</div>
-                    <div class="product-info">
-                        <p class="product-category">Frais</p>
-                        <h3 class="product-name">Fruits & Légumes</h3>
-                        <p class="product-desc">Des produits de saison directement venus des producteurs.</p>
-                        <div class="product-footer">
-                            <span class="product-price">Bio</span>
-                            <button class="btn-add-cart">Voir le rayon</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-img">⚡</div>
-                    <div class="product-info">
-                        <p class="product-category">Maison</p>
-                        <h3 class="product-name">Électroménager</h3>
-                        <p class="product-desc">Tout pour votre cuisine et l'entretien de votre maison.</p>
-                        <div class="product-footer">
-                            <span class="product-price">Garantie</span>
-                            <button class="btn-add-cart">Découvrir</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-img">✨</div>
-                    <div class="product-info">
-                        <p class="product-category">Beauté</p>
-                        <h3 class="product-name">Cosmétiques</h3>
-                        <p class="product-desc">Une sélection de produits de soin et maquillage.</p>
-                        <div class="product-footer">
-                            <span class="product-price">Nouveau</span>
-                            <button class="btn-add-cart">Acheter</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        </div>
     </main>
 
     <footer class="footer">
@@ -116,22 +69,20 @@
 
                 <div>
                     <h4>Contactez-nous</h4>
-                    <a href="tel:+21600000000">📞 +216 72 772 779</a>
+                    <a href="tel:+21672772779">📞 +216 72 772 779</a>
                     <a href="mailto:contact@novastore.com">✉️ contact@novastore.com</a>
                     <p>📍 123 Ghazela 2, Ariana</p>
                 </div>
 
                 <div>
-                    <h4>Suivez-nous sur les réseaux sociaux</h4>
-                    <div>
-                        <div class="social-links">
-                            <a href="https://instagram.com" target="_blank">
-                                <i class="fab fa-instagram"></i> Instagram
-                            </a>
-                            <a href="https://facebook.com" target="_blank">
-                                <i class="fab fa-facebook"></i> Facebook
-                            </a>
-                        </div>
+                    <h4>Suivez-nous</h4>
+                    <div class="social-links">
+                        <a href="https://instagram.com" target="_blank">
+                            <i class="fab fa-instagram"></i> Instagram
+                        </a>
+                        <a href="https://facebook.com" target="_blank">
+                            <i class="fab fa-facebook"></i> Facebook
+                        </a>
                     </div>
                 </div>
             </div>
@@ -141,6 +92,39 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        const images = [
+            'images/hero-1.png',
+            'images/hero-2.png',
+            'images/hero-3.png'
+        ];
+
+        let currentIndex = 0;
+        const slider = document.querySelector('.hero-slider');
+
+        images.forEach((imageSrc, index) => {
+            const slide = document.createElement('div');
+            slide.classList.add('slide');
+            slide.style.backgroundImage = `url('${imageSrc}')`;
+
+            if (index === 0) slide.classList.add('active');
+            slider.appendChild(slide);
+        });
+
+        const slides = document.querySelectorAll('.slide');
+
+        function nextSlide() {
+            if (slides.length === 0) return;
+            slides[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % slides.length;
+            slides[currentIndex].classList.add('active');
+        }
+
+        // Change toutes les 4 secondes
+        setInterval(nextSlide, 4000);
+    </script>
+
 </body>
 
 </html>
