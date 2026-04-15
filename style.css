@@ -1,9 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* ==========================================
+   NOVASTORE - GLOBAL CSS
+   ========================================== */
+
 :root {
     --primary: #E63946;
     --primary-dark: #c1121f;
     --secondary: #1D3557;
     --accent: #F4A261;
     --success: #2a9d8f;
+    --warning: #e9c46a;
+    --danger: #e76f51;
     --light: #f8f9fa;
     --dark: #1a1a2e;
     --gray: #6c757d;
@@ -13,26 +22,18 @@
     --radius: 12px;
     --radius-sm: 8px;
     --font-display: 'Playfair Display', serif;
-    --font-body: 'DM Sans', sans-serif;
+    --font-body: 'Poppins', sans-serif;
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Target Design Colors */
+    --brand-blue: #007bff;
+    --brand-pink: #fdf2f4;
+    --brand-red: #dc3545;
 }
 
-.top-bar {
-    background-color: var(--secondary);
-    color: #ffffff;
-    text-align: center;
-    padding: 10px 0;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-.container-top-bar {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 24px;
-}
-
-* {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -56,6 +57,22 @@ a {
     padding: 0 24px;
 }
 
+/* ---- TOP BAR ---- */
+.top-bar {
+    background-color: var(--secondary);
+    color: #ffffff;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.container-top-bar {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
 /* ---- NAVBAR ---- */
 .navbar {
     background: white;
@@ -67,6 +84,9 @@ a {
 }
 
 .nav-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -83,6 +103,10 @@ a {
     white-space: nowrap;
 }
 
+.logo strong {
+    color: var(--primary);
+}
+
 .logo-img {
     height: 60px;
     width: auto;
@@ -96,6 +120,12 @@ a {
     border-radius: 50px;
     overflow: hidden;
     max-width: 500px;
+    transition: var(--transition);
+}
+
+.nav-search:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
 }
 
 .nav-search input {
@@ -103,6 +133,8 @@ a {
     padding: 10px 20px;
     border: none;
     outline: none;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
 }
 
 .nav-search button {
@@ -111,6 +143,11 @@ a {
     border: none;
     padding: 10px 20px;
     cursor: pointer;
+    transition: var(--transition);
+}
+
+.nav-search button:hover {
+    background: var(--primary-dark);
 }
 
 .nav-actions {
@@ -126,11 +163,23 @@ a {
     cursor: pointer;
     border: none;
     background: transparent;
+    font-family: var(--font-body);
+    transition: var(--transition);
+    color: var(--secondary);
+}
+
+.btn-nav:hover {
+    background: var(--light);
+    color: var(--primary);
 }
 
 .btn-nav.btn-primary {
     background: var(--primary);
     color: white;
+}
+
+.btn-nav.btn-primary:hover {
+    background: var(--primary-dark);
 }
 
 /* ---- DROPDOWN ---- */
@@ -147,6 +196,7 @@ a {
     box-shadow: var(--shadow-hover);
     border-radius: var(--radius-sm);
     z-index: 1001;
+    border-top: 3px solid var(--primary);
 }
 
 .dropdown:hover .dropdown-content {
@@ -157,16 +207,18 @@ a {
     display: block;
     padding: 12px 20px;
     color: var(--dark);
+    font-size: 0.9rem;
+    transition: var(--transition);
 }
 
 .dropdown-content a:hover {
     background: var(--light);
     color: var(--primary);
+    padding-left: 24px;
 }
 
 .dropdown .btn-nav {
     background-color: #1a365d;
-    /* Bleu sombre NovaStore */
     color: white !important;
     padding: 10px 20px;
     border-radius: 50px;
@@ -180,27 +232,9 @@ a {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Style pour les sections */
-.product-section {
-    padding: 60px 0;
-    text-align: center;
-}
-
-.bg-light {
-    background-color: #f8f9fa;
-    /* Gris très clair pour différencier les sections */
-}
-
-.section-title {
-    font-size: 2rem;
-    color: #1a365d;
-    margin-bottom: 40px;
-    position: relative;
-}
-
-/* Bouton Catalogue */
+/* ---- CATALOGUE BANNER ---- */
 .catalogue-banner {
-    background: #1D3557;
+    background: var(--secondary);
     padding: 20px 0;
     text-align: center;
 }
@@ -218,10 +252,39 @@ a {
 
 .btn-catalogue:hover {
     background: white;
-    color: #e63946;
+    color: var(--primary);
 }
 
-/* Grille de produits */
+/* ---- SECTION TITLES ---- */
+.product-section {
+    padding: 60px 0;
+    text-align: center;
+}
+
+.bg-light {
+    background-color: #f8f9fa;
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--secondary);
+    margin-bottom: 40px;
+    position: relative;
+    text-align: center;
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: var(--primary);
+    border-radius: 2px;
+    margin: 12px auto 0;
+}
+
+/* ---- PRODUCTS GRID ---- */
 .products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -231,56 +294,47 @@ a {
     padding: 0 20px;
 }
 
+/* ---- PRODUCT CARD ---- */
 .product-card {
     background: white;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s;
-}
-
-/* --- NOUVEAU STYLE WISHLIST (CŒUR SEUL) --- */
-
-.product-card {
+    border-radius: 8px;
+    padding: 15px;
+    transition: transform 0.3s, box-shadow 0.3s;
     position: relative;
-    /* Indispensable pour que le bouton se place par rapport à la carte */
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #f0f0f0;
 }
 
+.product-card:hover {
+    transform: translateY(-10px);
+}
+
+/* ---- WISHLIST BUTTON ---- */
 .wishlist-btn {
     position: absolute;
     top: 15px;
-    /* Distance du haut */
     right: 15px;
-    /* Place le cœur à DROITE */
     background: none;
-    /* Supprime le fond gris/blanc */
     border: none;
-    /* ENLÈVE LA BORDURE */
     padding: 0;
-    color: #ccc;
-    /* Couleur grise par défaut */
-    font-size: 1.4rem;
-    /* Taille de l'icône */
+    color: #a8c6fa;
+    font-size: 1.6rem;
     cursor: pointer;
     z-index: 10;
     transition: transform 0.2s, color 0.3s;
     outline: none;
-    /* Enlève le contour bleu au clic */
 }
 
-/* Effet au survol */
 .wishlist-btn:hover {
     color: #999;
     transform: scale(1.1);
 }
 
-/* CLASSE ACTIVE : Quand on clique, le cœur devient rose */
 .wishlist-btn.active {
-    color: #e63946;
-    /* Ton rose/rouge NovaStore */
+    color: var(--primary);
 }
 
-/* Animation de rebond au clic */
 .wishlist-btn.active i {
     animation: heartBeat 0.4s ease-in-out;
 }
@@ -299,107 +353,412 @@ a {
     }
 }
 
-.product-card:hover {
-    transform: translateY(-10px);
-}
-
-.product-img-box {
-    font-size: 4rem;
-    background: #f1f3f5;
-    border-radius: 10px;
-    height: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 15px;
-}
-
-.product-name {
-    font-size: 1.1rem;
-    margin-bottom: 10px;
-}
-
-.product-price {
-    font-weight: bold;
-    color: #e63946;
-    font-size: 1.2rem;
-    margin-bottom: 15px;
-}
-
-.btn-add {
-    background: hwb(215 10% 64%);
-    color: white;
-    border: none;
-    padding: 8px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-}
-
-/* Container de l'image du produit */
+/* ---- PRODUCT IMAGE ---- */
 .product-img-box {
     background: white;
-    /* Fond blanc pour faire ressortir le produit */
-    height: 100px;
+    height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.product-img-box .nav-arrow {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #007bff;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
 }
 
 .product-img-box img {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    /* L'image ne sera jamais déformée */
 }
 
-/* Alignement du prix et du bouton panier bleu */
+/* ---- PRODUCT TEXT HIERARCHY ---- */
+
+/* 1. Marque */
+.brand-tag {
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-style: italic;
+    text-transform: uppercase;
+    color: var(--brand-red);
+    background: var(--brand-pink);
+    padding: 4px 12px;
+    display: inline-block;
+    margin-bottom: 12px;
+    width: fit-content;
+}
+
+/* 2. Nom du produit */
+.product-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: #000;
+    margin-bottom: 5px;
+    min-height: auto;
+}
+
+/* 3. Détails (Contenance) */
+.product-model {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+/* 4. Étoiles */
+.rating {
+    color: #ffc107;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    display: flex;
+    gap: 2px;
+}
+
+/* 5. Prix + Bouton panier */
 .product-footer-price {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 15px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.price-container {
+    color: var(--brand-blue);
+    display: flex;
+    align-items: baseline;
+    font-family: Arial, sans-serif;
 }
 
 .price-main {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #000;
+    font-size: 2rem;
+    font-weight: 700;
 }
 
 .price-currency {
-    font-size: 0.8rem;
-    font-weight: bold;
+    font-size: 1rem;
+    font-weight: 700;
     vertical-align: super;
 }
 
 .price-cents {
-    font-size: 0.8rem;
-    font-weight: bold;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-left: 2px;
 }
 
+/* Bouton panier icône */
 .btn-cart-icon {
-    background: #1D3557;
-    /* Bleu éclatant comme sur ton image */
+    background: var(--brand-blue);
+    color: white;
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+/* Ancien bouton add (gardé pour compatibilité) */
+.btn-add {
+    background: #1a365d;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-family: var(--font-body);
+    transition: var(--transition);
+}
+
+.btn-add:hover {
+    background: var(--primary);
+}
+
+/* Bouton panier icône */
+.btn-cart-icon {
+    background: var(--secondary);
     color: white;
     border: none;
     width: 42px;
     height: 42px;
     border-radius: 8px;
     cursor: pointer;
-    transition: 0.3s;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
 }
 
 .btn-cart-icon:hover {
-    background: #1D3557;
+    background: var(--primary);
     transform: scale(1.1);
 }
 
-/* ---- FOOTER (CORRIGÉ ET BLINDÉ) ---- */
+/* ---- HERO SLIDER ---- */
+.hero-slider {
+    height: 100vh;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.slide.active {
+    opacity: 1;
+}
+
+.hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    text-align: center;
+    width: 100%;
+}
+
+/* ---- ALERTS ---- */
+.alert {
+    padding: 14px 18px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
+.alert-success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+}
+
+.alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.alert-warning {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ---- MODAL ---- */
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: white;
+    border-radius: var(--radius);
+    padding: 32px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    z-index: 1;
+    animation: modalIn 0.3s ease;
+}
+
+@keyframes modalIn {
+    from {
+        transform: scale(0.95) translateY(10px);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: var(--light);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.modal-close:hover {
+    background: var(--danger);
+    color: white;
+}
+
+/* ---- TOAST ---- */
+.cart-toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--success);
+    color: white;
+    padding: 14px 24px;
+    border-radius: 50px;
+    font-weight: 500;
+    box-shadow: 0 4px 20px rgba(42, 157, 143, 0.4);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* ---- FORMS ---- */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--secondary);
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    transition: var(--transition);
+    background: white;
+    color: var(--dark);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.field-error {
+    font-size: 0.8rem;
+    color: var(--danger);
+    display: block;
+    margin-top: 4px;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: var(--font-body);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-submit:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+/* ---- FOOTER ---- */
 footer.footer {
-    background-color: #1D3557 !important;
+    background-color: var(--secondary) !important;
     padding: 60px 0 30px 0;
     margin-top: 80px;
     width: 100%;
@@ -428,6 +787,7 @@ footer.footer {
     align-items: center;
     gap: 10px;
     margin-bottom: 12px;
+    transition: var(--transition);
 }
 
 .footer a:hover {
@@ -463,44 +823,40 @@ footer.footer {
     color: #1877F2;
 }
 
-.hero-slider {
-    height: 100vh;
-    /* vh = % de la hauteur de l'écran. 60 est souvent l'idéal */
-    width: 100%;
-    position: relative;
-    overflow: hidden;
+/* ---- SCROLLBAR ---- */
+::-webkit-scrollbar {
+    width: 8px;
 }
 
-.slide {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-
-    /* AJOUT IMPORTANT */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
 }
 
-.slide.active {
-    opacity: 1;
+::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
 }
 
-.hero-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 10;
-    text-align: center;
-    width: 100%;
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 768px) {
+    .nav-search {
+        display: none;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    .products-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+    }
 }
