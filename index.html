@@ -3,18 +3,119 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>NovaStore</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaStore | Votre supermarché en ligne</title>
     <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
-    <nav>
-        <a href="#">NovaStore</a>
-        <a href="#">Connexion</a>
-    </nav>
 
-    <h1>Bienvenue sur NovaStore</h1>
-    <p>Votre supermarché en ligne</p>
+    <header class="navbar">
+        <div class="nav-container">
+
+            <div class="logo">
+                <img src="images/logo.png" alt="Logo de NovaStore" class="logo-img">
+                Nova<strong>Store</strong>
+            </div>
+
+            <div class="dropdown">
+                <button class="btn-nav">Rayons ▾</button>
+                <div class="dropdown-content">
+                    <a href="#">🥗 Alimentaire</a>
+                    <a href="#">⚡ Électroménager</a>
+                    <a href="#">✨ Cosmétiques</a>
+                    <a href="#">👗 Vêtements</a>
+                    <a href="#">🎮 Jeux</a>
+                    <a href="#">🍴 Ustensiles</a>
+                </div>
+            </div>
+
+            <div class="nav-search">
+                <input type="text" placeholder="Rechercher un produit...">
+                <button>Rechercher</button>
+            </div>
+
+            <nav class="nav-actions">
+                <a href="#" class="btn-nav">Connexion</a>
+                <a href="#" class="btn-nav btn-primary">S'inscrire</a>
+            </nav>
+
+        </div>
+    </header>
+
+    <main class="container">
+        <section style="padding: 60px 0; text-align: center;">
+            <h1 class="section-title">Bienvenue sur NovaStore</h1>
+            <p style="color: var(--gray); font-size: 1.1rem; margin-top: -20px; margin-bottom: 40px;">
+                Votre supermarché en ligne, livré chez vous en un clic.
+            </p>
+
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-img">🥗</div>
+                    <div class="product-info">
+                        <p class="product-category">Frais</p>
+                        <h3 class="product-name">Fruits & Légumes</h3>
+                        <p class="product-desc">Des produits de saison directement venus des producteurs.</p>
+                        <div class="product-footer">
+                            <span class="product-price">Bio</span>
+                            <button class="btn-add-cart">Voir le rayon</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-img">⚡</div>
+                    <div class="product-info">
+                        <p class="product-category">Maison</p>
+                        <h3 class="product-name">Électroménager</h3>
+                        <p class="product-desc">Tout pour votre cuisine et l'entretien de votre maison.</p>
+                        <div class="product-footer">
+                            <span class="product-price">Garantie</span>
+                            <button class="btn-add-cart">Découvrir</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-img">✨</div>
+                    <div class="product-info">
+                        <p class="product-category">Beauté</p>
+                        <h3 class="product-name">Cosmétiques</h3>
+                        <p class="product-desc">Une sélection de produits de soin et maquillage.</p>
+                        <div class="product-footer">
+                            <span class="product-price">Nouveau</span>
+                            <button class="btn-add-cart">Acheter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="logo" style="color: white;">🛍️ NovaStore</div>
+                    <p>La qualité professionnelle au service de votre quotidien.</p>
+                </div>
+                <div>
+                    <h4>Aide & Service</h4>
+                    <a href="#">Livraison</a>
+                    <a href="#">Retours</a>
+                    <a href="#">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 NovaStore. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
 </body>
 
 </html>
