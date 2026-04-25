@@ -8,7 +8,7 @@ session_start();
 
 // Si déjà connecté, rediriger
 if (isset($_SESSION['user_id'])) {
-    header('Location: ../index.html');
+    header('Location: ../index.php');
     exit;
 }
 
@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- NAVBAR -->
     <header class="navbar">
         <div class="nav-container">
-            <a href="../index.html" class="logo">
+            <a href="../index.php" class="logo">
                 Nova<strong>Store</strong>
             </a>
         </div>

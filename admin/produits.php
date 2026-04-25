@@ -183,7 +183,7 @@ if (isset($_GET['editer']) && is_numeric($_GET['editer'])) {
         <div class="nav-section-title">Utilisateurs</div>
         <a href="utilisateurs.php"><i class="fas fa-users"></i> Clients</a>
         <div class="nav-section-title">Paramètres</div>
-        <a href="../index.html" target="_blank"><i class="fas fa-store"></i> Voir le site</a>
+        <a href="../index.php" target="_blank"><i class="fas fa-store"></i> Voir le site</a>
     </nav>
     <div class="sidebar-footer">
         <div><?= htmlspecialchars($_SESSION['prenom'] . ' ' . $_SESSION['nom']) ?></div>

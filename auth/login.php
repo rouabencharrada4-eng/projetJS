@@ -11,7 +11,7 @@ if (isset($_SESSION['user_id'])) {
     if ($_SESSION['role'] === 'admin') {
         header('Location: ../admin/dashboard.php');
     } else {
-        header('Location: ../index.html');
+        header('Location: ../index.php');
     }
     exit;
 }
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($user['role'] === 'admin') {
                 header('Location: ../admin/dashboard.php');
             } else {
-                header('Location: ../index.html');
+                header('Location: ../index.php');
             }
             exit;
         } else {
@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- NAVBAR -->
     <header class="navbar">
         <div class="nav-container">
-            <a href="../index.html" class="logo">
+            <a href="../index.php" class="logo">
                 Nova<strong>Store</strong>
             </a>
         </div>
