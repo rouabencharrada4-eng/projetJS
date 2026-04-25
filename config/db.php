@@ -6,8 +6,8 @@
 
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'novastore');
-define('DB_USER', 'roua');          // ← change avec ton utilisateur MySQL
-define('DB_PASS', 'Roua@2003');              // ← change avec ton mot de passe MySQL
+define('DB_USER', 'root');          // ← change avec ton utilisateur MySQL
+define('DB_PASS', '');              // ← change avec ton mot de passe MySQL
 define('DB_CHARSET', 'utf8mb4');
 
 function getDB(): PDO {
