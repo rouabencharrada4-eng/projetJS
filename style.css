@@ -24,7 +24,7 @@
     --font-display: 'Playfair Display', serif;
     --font-body: 'Poppins', sans-serif;
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    
+
     /* Target Design Colors */
     --brand-blue: #007bff;
     --brand-pink: #fdf2f4;
@@ -180,6 +180,27 @@ a {
 
 .btn-nav.btn-primary:hover {
     background: var(--primary-dark);
+}
+
+.btn-theme {
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.btn-theme:hover {
+    background: var(--light);
+    transform: scale(1.1);
 }
 
 /* ---- DROPDOWN ---- */
@@ -859,4 +880,155 @@ footer.footer {
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         gap: 16px;
     }
+}
+
+/* ---- DARK MODE ---- */
+body.dark {
+    background: #0f172a;
+    color: #f1f5f9;
+}
+
+body.dark .navbar {
+    background: #1e293b;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid #334155;
+}
+
+body.dark .logo {
+    color: #f1f5f9;
+}
+
+body.dark .btn-theme {
+    background: #334155;
+    border-color: #475569;
+    color: #f1f5f9;
+}
+
+body.dark .product-card {
+    background: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+body.dark .product-name {
+    color: #f1f5f9;
+}
+
+body.dark .product-model {
+    color: #94a3b8;
+}
+
+body.dark .nav-search {
+    border-color: #334155;
+    background: #1e293b;
+}
+
+body.dark .nav-search input {
+    background: transparent;
+    color: #f1f5f9;
+}
+
+body.dark .section-title {
+    color: #f1f5f9;
+}
+
+body.dark .bg-light {
+    background: #111827 !important;
+}
+
+body.dark .footer {
+    background: #020617 !important;
+    border-top: 1px solid #1e293b;
+}
+
+body.dark .btn-nav {
+    color: #cbd5e1;
+}
+
+body.dark .btn-nav:hover {
+    background: #334155;
+    color: white;
+}
+
+body.dark .top-bar {
+    background: #020617;
+    border-bottom: 1px solid #1e293b;
+}
+
+body.dark .dropdown-content {
+    background: #1e293b;
+    border-color: var(--primary);
+}
+
+body.dark .dropdown-content a {
+    color: #cbd5e1;
+}
+
+body.dark .dropdown-content a:hover {
+    background: #334155;
+    color: var(--primary);
+}
+
+body.dark .modal-content {
+    background: #1e293b;
+    color: #f1f5f9;
+}
+
+body.dark input, 
+body.dark select, 
+body.dark textarea {
+    background: #0f172a;
+    border-color: #334155;
+    color: #f1f5f9;
+}
+
+
+body.dark .logo {
+    color: #e2e8f0;
+}
+
+body.dark .product-card {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+body.dark .product-name {
+    color: #f1f5f9;
+}
+
+body.dark .product-model {
+    color: #94a3b8;
+}
+
+body.dark .nav-search {
+    border-color: #334155;
+}
+
+body.dark .nav-search input {
+    background: #1e293b;
+    color: #e2e8f0;
+}
+
+body.dark .section-title {
+    color: #f1f5f9;
+}
+
+body.dark .bg-light {
+    background: #0f172a !important;
+}
+
+body.dark .footer {
+    background: #020617 !important;
+}
+
+body.dark .btn-nav {
+    color: #e2e8f0;
+}
+
+body.dark .btn-nav:hover {
+    background: #334155;
+}
+
+body.dark .top-bar {
+    background: #020617;
 }

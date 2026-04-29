@@ -305,5 +305,29 @@ document.addEventListener('DOMContentLoaded', function () {
             setTimeout(() => toast.remove(), 300);
         }, 3000);
     }
+    // =========================================================
+    // 7. DARK / LIGHT MODE
+    // =========================================================
+    function toggleTheme() {
+        const body = document.body;
+        const btn = document.getElementById('theme-toggle');
 
+        body.classList.toggle('dark');
+
+        if (body.classList.contains('dark')) {
+            btn.textContent = '☀️';
+            localStorage.setItem('theme', 'dark');
+        } else {
+            btn.textContent = '🌙';
+            localStorage.setItem('theme', 'light');
+        }
+    }
+
+    // Appliquer le thème sauvegardé
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark');
+        const btn = document.getElementById('theme-toggle');
+        if (btn) btn.textContent = '☀️';
+    }
 }); // FIN DOMContentLoaded
