@@ -330,4 +330,17 @@ document.addEventListener('DOMContentLoaded', function () {
         const btn = document.getElementById('theme-toggle');
         if (btn) btn.textContent = '☀️';
     }
+    // =========================================================
+    // MEGA MENU - Alimentaire
+    // =========================================================
+    window.showSub = function (section) {
+        // Désactiver tous
+        document.querySelectorAll('.submenu-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.submenu-left-item').forEach(i => i.classList.remove('active'));
+
+        // Activer la section choisie
+        const el = document.getElementById('sub-' + section);
+        if (el) el.classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
 }); // FIN DOMContentLoaded

@@ -974,8 +974,8 @@ body.dark .modal-content {
     color: #f1f5f9;
 }
 
-body.dark input, 
-body.dark select, 
+body.dark input,
+body.dark select,
 body.dark textarea {
     background: #0f172a;
     border-color: #334155;
