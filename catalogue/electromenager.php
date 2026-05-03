@@ -242,7 +242,6 @@ function carteProduit($p, $wishlist_ids) {
 
         <div class="page-banner">
             <h3>Électroménager & Cuisine</h3>
-            <p>Cafetières, airfryers, robots pâtissiers, machines à laver et bien plus encore !</p>
         </div>
 
         <h2 class="section-title">
