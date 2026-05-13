@@ -219,18 +219,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $token_valide) {
 
             <div class="form-group">
                 <label for="nouveau_mdp"><i class="fas fa-lock"></i> Nouveau mot de passe</label>
-                <input type="password" id="nouveau_mdp" name="nouveau_mdp"
-                       placeholder="Minimum 8 caractères" required
-                       oninput="verifierForce(this.value)">
+                <div style="position: relative;">
+                    <input type="password" id="nouveau_mdp" name="nouveau_mdp"
+                           placeholder="Minimum 8 caractères" required
+                           oninput="verifierForce(this.value)" style="padding-right: 45px;">
+                    <button type="button" class="togglePassword" data-target="nouveau_mdp"
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); 
+                                   background: none; border: none; cursor: pointer; color: #6c757d; font-size: 1.1rem;
+                                   display: flex; align-items: center; justify-content: center; padding: 5px;">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
                 <div class="mdp-strength"><div class="mdp-strength-bar" id="strength-bar"></div></div>
                 <div class="mdp-hint" id="strength-hint">Entrez un mot de passe</div>
             </div>
 
             <div class="form-group">
                 <label for="confirmer_mdp"><i class="fas fa-lock"></i> Confirmer le mot de passe</label>
-                <input type="password" id="confirmer_mdp" name="confirmer_mdp"
-                       placeholder="Répéter le mot de passe" required>
+                <div style="position: relative;">
+                    <input type="password" id="confirmer_mdp" name="confirmer_mdp"
+                           placeholder="Répéter le mot de passe" required style="padding-right: 45px;">
+                    <button type="button" class="togglePassword" data-target="confirmer_mdp"
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); 
+                                   background: none; border: none; cursor: pointer; color: #6c757d; font-size: 1.1rem;
+                                   display: flex; align-items: center; justify-content: center; padding: 5px;">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
             </div>
+
+            <script>
+                document.querySelectorAll('.togglePassword').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const targetId = this.getAttribute('data-target');
+                        const input = document.getElementById(targetId);
+                        const icon = this.querySelector('i');
+                        
+                        const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                        input.setAttribute('type', type);
+                        
+                        icon.classList.toggle('fa-eye');
+                        icon.classList.toggle('fa-eye-slash');
+                    });
+                });
+            </script>
 
             <button type="submit" class="btn-submit">
                 <i class="fas fa-save"></i> Enregistrer le nouveau mot de passe

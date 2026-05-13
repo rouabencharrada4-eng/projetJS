@@ -163,9 +163,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="form-group">
                     <label for="mot_de_passe">Mot de passe</label>
-                    <input type="password" id="mot_de_passe" name="mot_de_passe"
-                           placeholder="Votre mot de passe" required>
+                    <div style="position: relative;">
+                        <input type="password" id="mot_de_passe" name="mot_de_passe"
+                               placeholder="Votre mot de passe" required style="padding-right: 45px;">
+                        <button type="button" id="togglePassword" 
+                                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); 
+                                       background: none; border: none; cursor: pointer; color: #6c757d; font-size: 1.1rem;
+                                       display: flex; align-items: center; justify-content: center; padding: 5px;">
+                            <i class="fas fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
                 </div>
+
+                <script>
+                    const togglePassword = document.querySelector('#togglePassword');
+                    const password = document.querySelector('#mot_de_passe');
+                    const eyeIcon = document.querySelector('#eyeIcon');
+
+                    togglePassword.addEventListener('click', function (e) {
+                        // Basculer le type
+                        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                        password.setAttribute('type', type);
+                        
+                        // Basculer l'icône
+                        eyeIcon.classList.toggle('fa-eye');
+                        eyeIcon.classList.toggle('fa-eye-slash');
+                    });
+                </script>
 
                 <div class="forgot-link">
                     <a href="forgot_password.php">Mot de passe oublié ?</a>

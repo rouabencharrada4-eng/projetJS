@@ -175,15 +175,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="form-group">
                     <label for="mot_de_passe">Mot de passe *</label>
-                    <input type="password" id="mot_de_passe" name="mot_de_passe"
-                           placeholder="Minimum 8 caractères" required>
+                    <div style="position: relative;">
+                        <input type="password" id="mot_de_passe" name="mot_de_passe"
+                               placeholder="Minimum 8 caractères" required style="padding-right: 45px;">
+                        <button type="button" class="togglePassword" data-target="mot_de_passe"
+                                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); 
+                                       background: none; border: none; cursor: pointer; color: #6c757d; font-size: 1.1rem;
+                                       display: flex; align-items: center; justify-content: center; padding: 5px;">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label for="confirmer_mdp">Confirmer le mot de passe *</label>
-                    <input type="password" id="confirmer_mdp" name="confirmer_mdp"
-                           placeholder="Répéter le mot de passe" required>
+                    <div style="position: relative;">
+                        <input type="password" id="confirmer_mdp" name="confirmer_mdp"
+                               placeholder="Répéter le mot de passe" required style="padding-right: 45px;">
+                        <button type="button" class="togglePassword" data-target="confirmer_mdp"
+                                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); 
+                                       background: none; border: none; cursor: pointer; color: #6c757d; font-size: 1.1rem;
+                                       display: flex; align-items: center; justify-content: center; padding: 5px;">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
+
+                <script>
+                    document.querySelectorAll('.togglePassword').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const targetId = this.getAttribute('data-target');
+                            const input = document.getElementById(targetId);
+                            const icon = this.querySelector('i');
+                            
+                            // Basculer le type
+                            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                            input.setAttribute('type', type);
+                            
+                            // Basculer l'icône
+                            icon.classList.toggle('fa-eye');
+                            icon.classList.toggle('fa-eye-slash');
+                        });
+                    });
+                </script>
 
                 <button type="submit" class="btn-submit">
                     <i class="fas fa-user-plus"></i> Créer mon compte
