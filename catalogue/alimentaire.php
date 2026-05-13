@@ -328,7 +328,7 @@ $section_ids = ['fruits', 'legumes', 'laitiers', 'boissons', 'oeufs', 'petitdej'
 <script>
     function lancerRecherche() {
         const q = document.getElementById('search-input').value.trim();
-        if (q) window.location.href = `../index.php?q=${encodeURIComponent(q)}`;
+        if (q) window.location.href = `../search.php?q=${encodeURIComponent(q)}`;
     }
     document.getElementById('search-input')?.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') lancerRecherche();
