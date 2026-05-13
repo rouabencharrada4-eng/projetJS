@@ -1,10 +1,10 @@
 <?php
 // ============================================================
-//   NOVASTORE - catalogue/ustensiles.php
+//   NOVASTORE - catalogue/vetements/femme.php
 // ============================================================
 
 session_start();
-require_once '../config/db.php';
+require_once '../../config/db.php';
 $pdo = getDB();
 
 $nb_panier = 0;
@@ -16,44 +16,51 @@ if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'client') {
 
 $produits = [
     [
-        'id'      => 'ustensile-1',
-        'nom'     => 'Lot de 10 Ustensiles',
+        'id'      => 'femme-1',
+        'nom'     => 'Ensemble Simple',
         'marque'  => 'NOVASTORE',
-        'modele'  => 'Cuisine pratique – Qualité premium',
-        'prix'    => 12.000,
-        'image'   => '../images/lot.jpg',
+        'modele'  => '100% Coton – Confort & Style',
+        'prix'    => 49.900,
+        'image'   => '../../images/ensemble.jpg',
         'note'    => 4.5,
-        'avis'    => 27,
+        'avis'    => 38,
+        'tailles' => ['XS', 'S', 'M', 'L'],
         'couleurs'=> [
-            ['nom' => 'Gris', 'hex' => '#9ca3af'],
-            ['nom' => 'Rose', 'hex' => '#f9a8d4'],
+            ['nom' => 'Gris',  'hex' => '#9ca3af'],
+            ['nom' => 'Blanc', 'hex' => '#f9fafb'],
+            ['nom' => 'Noir',  'hex' => '#111827'],
         ],
     ],
     [
-        'id'      => 'ustensile-2',
-        'nom'     => 'Lot 6 Ustensiles + Support',
+        'id'      => 'femme-2',
+        'nom'     => 'Ensemble Rayé',
         'marque'  => 'NOVASTORE',
-        'modele'  => 'Matière nylon et polypropylène',
-        'prix'    => 25.000,
-        'image'   => '../images/lotsupport.jpg',
+        'modele'  => '100% Coton – Rayures tendance',
+        'prix'    => 54.900,
+        'image'   => '../../images/ensemble2.jpg',
         'note'    => 4.0,
-        'avis'    => 15,
+        'avis'    => 24,
+        'tailles' => ['XS', 'S', 'M', 'L'],
         'couleurs'=> [
-            ['nom' => 'Gris', 'hex' => '#9ca3af'],
-            ['nom' => 'Rose', 'hex' => '#f9a8d4'],
+            ['nom' => 'Marron', 'hex' => '#78350f'],
+            ['nom' => 'Beige',  'hex' => '#d4b483'],
+            ['nom' => 'Blanc',  'hex' => '#f9fafb'],
+            ['nom' => 'Noir',   'hex' => '#111827'],
         ],
     ],
     [
-        'id'      => 'ustensile-3',
-        'nom'     => 'Lot De 3 Faitouts',
+        'id'      => 'femme-3',
+        'nom'     => 'Pyjama / Ensemble Nuit',
         'marque'  => 'NOVASTORE',
-        'modele'  => 'En Acier Inoxydable Sans PFAS – Elo Brillant',
-        'prix'    => 190.000,
-        'image'   => '../images/tnajer.jpg',
-        'note'    => 5.0,
-        'avis'    => 42,
+        'modele'  => 'Coton doux – Confort nuit',
+        'prix'    => 39.900,
+        'image'   => '../../images/ensemble.jpg',
+        'note'    => 4.5,
+        'avis'    => 51,
+        'tailles' => ['XS', 'S', 'M', 'L'],
         'couleurs'=> [
-            ['nom' => 'Argent', 'hex' => '#d1d5db'],
+            ['nom' => 'Jaune + Rose', 'hex' => '#fbbf24', 'hex2' => '#f9a8d4'],
+            ['nom' => 'Bleu + Rose',  'hex' => '#60a5fa', 'hex2' => '#f9a8d4'],
         ],
     ],
 ];
@@ -63,8 +70,8 @@ $produits = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ustensiles de Cuisine – NovaStore</title>
-    <link rel="stylesheet" href="../style.css">
+    <title>Vêtements Femme – NovaStore</title>
+    <link rel="stylesheet" href="../../style.css">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -80,7 +87,7 @@ $produits = [
         .breadcrumb-inner a { color: #E63946; text-decoration: none; }
 
         .page-banner {
-            background: linear-gradient(135deg, #f97316, #c2410c);
+            background: linear-gradient(135deg, #f472b6, #db2777);
             border-radius: 16px; padding: 32px;
             margin-bottom: 48px; color: white; text-align: center;
         }
@@ -90,7 +97,7 @@ $produits = [
         }
         .page-banner p { color: rgba(255,255,255,0.85); }
 
-        /* Cards produits ustensiles */
+        /* Cards produits vêtements */
         .vetement-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -113,9 +120,9 @@ $produits = [
         }
 
         .vetement-img {
-            width: 420px;
-            height: 420px;
-            object-fit: contain;
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
             background: #f8f9fa;
         }
 
@@ -147,7 +154,7 @@ $produits = [
             white-space: nowrap;
         }
 
-        /* Couleurs */
+        /* Tailles */
         .options-label {
             font-size: 0.82rem;
             font-weight: 700;
@@ -157,6 +164,36 @@ $produits = [
             margin: 14px 0 8px;
         }
 
+        .tailles-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 4px;
+        }
+
+        .taille-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            background: white;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #374151;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .taille-btn:hover, .taille-btn.selected {
+            border-color: #E63946;
+            background: #E63946;
+            color: white;
+        }
+
+        /* Couleurs */
         .couleurs-row {
             display: flex;
             gap: 10px;
@@ -178,30 +215,14 @@ $produits = [
             border-color: #E63946;
             transform: scale(1.15);
         }
-
-        /* Tooltip couleur */
-        .couleur-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            position: relative;
+        .couleur-btn.bicolor {
+            background: linear-gradient(135deg, var(--c1) 50%, var(--c2) 50%);
         }
-        .couleur-wrapper:hover .couleur-tooltip {
-            display: block;
-        }
-        .couleur-tooltip {
-            display: none;
-            position: absolute;
-            bottom: 120%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1D3557;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            white-space: nowrap;
-            z-index: 10;
+        .couleur-nom {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-left: 6px;
+            align-self: center;
         }
 
         /* Rating */
@@ -233,6 +254,31 @@ $produits = [
             margin-top: 16px;
         }
         .btn-ajouter:hover { background: #E63946; }
+
+        /* Tooltip couleur */
+        .couleur-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            position: relative;
+        }
+        .couleur-wrapper:hover .couleur-tooltip {
+            display: block;
+        }
+        .couleur-tooltip {
+            display: none;
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1D3557;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            z-index: 10;
+        }
     </style>
 </head>
 <body>
@@ -247,8 +293,8 @@ $produits = [
 <!-- NAVBAR -->
 <header class="navbar">
     <div class="nav-container">
-        <a href="../index.php" class="logo" style="text-decoration:none;">
-            <img src="../images/logo.png" alt="NovaStore" class="logo-img">
+        <a href="../../index.php" class="logo" style="text-decoration:none;">
+            <img src="../../images/logo.png" alt="NovaStore" class="logo-img">
             Nova<strong>Store</strong>
         </a>
         <div class="nav-search">
@@ -258,11 +304,11 @@ $produits = [
         <nav class="nav-actions">
             <?php if (isset($_SESSION['user_id'])): ?>
                 <?php if ($_SESSION['role'] === 'admin'): ?>
-                    <a href="../admin/dashboard.php" class="btn-nav"><i class="fas fa-chart-pie"></i> Dashboard</a>
-                    <a href="../auth/logout.php" class="btn-nav" style="color:#E63946;"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+                    <a href="../../admin/dashboard.php" class="btn-nav"><i class="fas fa-chart-pie"></i> Dashboard</a>
+                    <a href="../../auth/logout.php" class="btn-nav" style="color:#E63946;"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
                 <?php else: ?>
-                    <a href="../client/profil.php" class="btn-nav"><i class="fas fa-user"></i> <?= htmlspecialchars($_SESSION['prenom']) ?></a>
-                    <a href="../client/panier.php" class="btn-nav btn-primary">
+                    <a href="../../client/profil.php" class="btn-nav"><i class="fas fa-user"></i> <?= htmlspecialchars($_SESSION['prenom']) ?></a>
+                    <a href="../../client/panier.php" class="btn-nav btn-primary">
                         <i class="fas fa-shopping-cart"></i> Panier
                         <?php if ($nb_panier > 0): ?>
                         <span style="background:white;color:#E63946;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;margin-left:4px;">
@@ -272,8 +318,8 @@ $produits = [
                     </a>
                 <?php endif; ?>
             <?php else: ?>
-                <a href="../auth/login.php" class="btn-nav">Connexion</a>
-                <a href="../auth/register.php" class="btn-nav btn-primary">S'inscrire</a>
+                <a href="../../auth/login.php" class="btn-nav">Connexion</a>
+                <a href="../../auth/register.php" class="btn-nav btn-primary">S'inscrire</a>
             <?php endif; ?>
             <button id="theme-toggle" onclick="toggleTheme()"
                 style="background:white;border:2px solid #e9ecef;border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:0.3s;flex-shrink:0;">
@@ -287,9 +333,11 @@ $produits = [
 <div class="breadcrumb">
     <div class="container">
         <div class="breadcrumb-inner">
-            <a href="../index.php">Accueil</a>
+            <a href="../../index.php">Accueil</a>
             <i class="fas fa-chevron-right" style="font-size:0.7rem;"></i>
-            <span style="color:#1D3557;font-weight:600;">Ustensiles de Cuisine</span>
+            <a href="../vetements.php">Vêtements</a>
+            <i class="fas fa-chevron-right" style="font-size:0.7rem;"></i>
+            <span style="color:#1D3557;font-weight:600;">Femme</span>
         </div>
     </div>
 </div>
@@ -299,8 +347,8 @@ $produits = [
     <div class="container">
 
         <div class="page-banner">
-            <h3>Ustensiles de Cuisine</h3>
-            <p>Équipez votre cuisine avec nos sets professionnels – Qualité & durabilité garanties</p>
+            <h3>Collection Femme</h3>
+            <p>Ensembles confortables et tendance — Tailles XS, S, M, L disponibles</p>
         </div>
 
         <div class="vetement-grid">
@@ -329,16 +377,36 @@ $produits = [
                         <span style="font-size:0.8rem; color:#6c757d; margin-left:4px;">(<?= $p['avis'] ?>)</span>
                     </div>
 
+                    <!-- Tailles -->
+                    <div class="options-label">Taille</div>
+                    <div class="tailles-row" id="tailles-<?= $p['id'] ?>">
+                        <?php foreach ($p['tailles'] as $t): ?>
+                        <button class="taille-btn"
+                            onclick="selectionnerTaille('<?= $p['id'] ?>', '<?= $t ?>', this)">
+                            <?= $t ?>
+                        </button>
+                        <?php endforeach; ?>
+                    </div>
+                    <div id="taille-selected-<?= $p['id'] ?>" style="font-size:0.8rem;color:#6c757d;margin-top:4px;min-height:18px;"></div>
+
                     <!-- Couleurs -->
                     <div class="options-label" style="margin-top:14px;">Couleur</div>
                     <div class="couleurs-row" id="couleurs-<?= $p['id'] ?>">
                         <?php foreach ($p['couleurs'] as $idx => $c): ?>
                         <div class="couleur-wrapper">
+                            <?php if (isset($c['hex2'])): ?>
+                            <button class="couleur-btn bicolor selected-check"
+                                style="--c1:<?= $c['hex'] ?>; --c2:<?= $c['hex2'] ?>;"
+                                onclick="selectionnerCouleur('<?= $p['id'] ?>', '<?= $c['nom'] ?>', this)"
+                                title="<?= $c['nom'] ?>">
+                            </button>
+                            <?php else: ?>
                             <button class="couleur-btn"
                                 style="background:<?= $c['hex'] ?>; <?= $c['hex'] === '#f9fafb' ? 'border-color:#dee2e6;' : '' ?>"
                                 onclick="selectionnerCouleur('<?= $p['id'] ?>', '<?= $c['nom'] ?>', this)"
                                 title="<?= $c['nom'] ?>">
                             </button>
+                            <?php endif; ?>
                             <span class="couleur-tooltip"><?= $c['nom'] ?></span>
                         </div>
                         <?php endforeach; ?>
@@ -364,7 +432,7 @@ $produits = [
         <div class="footer-grid">
             <div>
                 <div class="logo-footer">
-                    <img src="../images/logo.png" alt="NovaStore" class="logo-img-footer">
+                    <img src="../../images/logo.png" alt="NovaStore" class="logo-img-footer">
                 </div>
                 <p>La qualité professionnelle au service de votre quotidien.</p>
             </div>
@@ -395,7 +463,18 @@ $produits = [
 </footer>
 
 <script>
+    // Sélections par produit
     const selections = {};
+
+    function selectionnerTaille(produitId, taille, btn) {
+        // Désélectionner les autres
+        document.querySelectorAll(`#tailles-${produitId} .taille-btn`).forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+
+        if (!selections[produitId]) selections[produitId] = {};
+        selections[produitId].taille = taille;
+        document.getElementById(`taille-selected-${produitId}`).textContent = 'Taille sélectionnée : ' + taille;
+    }
 
     function selectionnerCouleur(produitId, couleur, btn) {
         document.querySelectorAll(`#couleurs-${produitId} .couleur-btn`).forEach(b => {
@@ -413,6 +492,10 @@ $produits = [
     function ajouterPanier(produitId, nom) {
         const sel = selections[produitId] || {};
 
+        if (!sel.taille) {
+            alert('Veuillez sélectionner une taille !');
+            return;
+        }
         if (!sel.couleur) {
             alert('Veuillez sélectionner une couleur !');
             return;
@@ -429,17 +512,17 @@ $produits = [
             box-shadow:0 4px 20px rgba(16,185,129,0.4);
             max-width:360px;
         `;
-        toast.innerHTML = `✅ ${nom} — ${sel.couleur} ajouté au panier !`;
+        toast.innerHTML = `✅ ${nom} — Taille ${sel.taille} / ${sel.couleur} ajouté au panier !`;
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 3500);
         <?php else: ?>
-        window.location.href = '../auth/login.php';
+        window.location.href = '../../auth/login.php';
         <?php endif; ?>
     }
 
     function lancerRecherche() {
         const q = document.getElementById('search-input').value.trim();
-        if (q) window.location.href = `../index.php?q=${encodeURIComponent(q)}`;
+        if (q) window.location.href = `../../index.php?q=${encodeURIComponent(q)}`;
     }
     document.getElementById('search-input')?.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') lancerRecherche();
