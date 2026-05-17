@@ -1,12 +1,6 @@
 <?php
-// ============================================================
-//   NOVASTORE - admin/dashboard.php
-//   Tableau de bord administrateur
-// ============================================================
-
 session_start();
 
-// Protection : admin uniquement
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../auth/login.php');
     exit;
@@ -15,28 +9,20 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 require_once '../config/db.php';
 $pdo = getDB();
 
-// --- Statistiques ---
 $stats = [];
 
-// Total clients
 $stats['clients'] = $pdo->query('SELECT COUNT(*) FROM utilisateurs WHERE role = "client"')->fetchColumn();
 
-// Total produits
 $stats['produits'] = $pdo->query('SELECT COUNT(*) FROM produits WHERE actif = 1')->fetchColumn();
 
-// Total commandes
 $stats['commandes'] = $pdo->query('SELECT COUNT(*) FROM commandes')->fetchColumn();
 
-// Chiffre d'affaires total
 $stats['ca'] = $pdo->query('SELECT COALESCE(SUM(total), 0) FROM commandes WHERE statut != "annulee"')->fetchColumn();
 
-// Commandes en attente
 $stats['en_attente'] = $pdo->query('SELECT COUNT(*) FROM commandes WHERE statut = "en_attente"')->fetchColumn();
 
-// Produits stock faible (< 5)
 $stats['stock_faible'] = $pdo->query('SELECT COUNT(*) FROM produits WHERE stock < 5 AND actif = 1')->fetchColumn();
 
-// --- Dernières commandes ---
 $dernieres_commandes = $pdo->query('
     SELECT c.id, c.total, c.statut, c.created_at,
            u.nom, u.prenom, u.email
@@ -46,7 +32,6 @@ $dernieres_commandes = $pdo->query('
     LIMIT 8
 ')->fetchAll();
 
-// --- Produits stock faible ---
 $produits_stock_faible = $pdo->query('
     SELECT p.id, p.nom, p.marque, p.stock, cat.nom AS categorie
     FROM produits p
@@ -56,7 +41,6 @@ $produits_stock_faible = $pdo->query('
     LIMIT 6
 ')->fetchAll();
 
-// Statuts avec couleurs
 $statut_labels = [
     'en_attente'     => ['label' => 'En attente',      'color' => '#f59e0b'],
     'confirmee'      => ['label' => 'Confirmée',        'color' => '#3b82f6'],
@@ -79,7 +63,6 @@ $statut_labels = [
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'DM Sans', sans-serif; background: #f1f5f9; display: flex; min-height: 100vh; }
 
-        /* ---- SIDEBAR ---- */
         .sidebar {
             width: 260px;
             background: #1D3557;
@@ -141,7 +124,6 @@ $statut_labels = [
             margin-top: 8px;
         }
 
-        /* ---- MAIN ---- */
         .main-content {
             margin-left: 260px;
             flex: 1;
@@ -149,7 +131,6 @@ $statut_labels = [
             flex-direction: column;
         }
 
-        /* ---- TOP BAR ---- */
         .topbar {
             background: white;
             padding: 16px 32px;
@@ -171,10 +152,8 @@ $statut_labels = [
             color: white; font-weight: 700; font-size: 1rem;
         }
 
-        /* ---- PAGE CONTENT ---- */
         .page { padding: 32px; }
 
-        /* ---- STAT CARDS ---- */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -209,7 +188,6 @@ $statut_labels = [
             font-weight: 600;
         }
 
-        /* ---- SECTIONS ---- */
         .section-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -231,7 +209,6 @@ $statut_labels = [
         .card-header h3 { font-size: 1rem; color: #1D3557; font-weight: 700; }
         .card-header a { font-size: 0.85rem; color: #E63946; text-decoration: none; }
 
-        /* ---- TABLE ---- */
         .data-table { width: 100%; border-collapse: collapse; }
         .data-table th {
             background: #f8f9fa;
@@ -252,7 +229,6 @@ $statut_labels = [
         .data-table tr:last-child td { border-bottom: none; }
         .data-table tr:hover td { background: #f8f9fa; }
 
-        /* ---- STATUS BADGE ---- */
         .status-badge {
             padding: 4px 10px;
             border-radius: 20px;
@@ -261,7 +237,6 @@ $statut_labels = [
             display: inline-block;
         }
 
-        /* ---- STOCK LIST ---- */
         .stock-list { padding: 0; }
         .stock-item {
             display: flex;
@@ -343,7 +318,6 @@ $statut_labels = [
 
     <div class="page">
 
-        <!-- ===== STAT CARDS ===== -->
         <div class="stats-grid">
 
             <div class="stat-card">
@@ -405,10 +379,8 @@ $statut_labels = [
 
         </div>
 
-        <!-- ===== SECTION GRID ===== -->
         <div class="section-grid">
 
-            <!-- Dernières commandes -->
             <div class="card">
                 <div class="card-header">
                     <h3><i class="fas fa-box" style="color:#E63946; margin-right:8px;"></i>Dernières commandes</h3>
@@ -450,7 +422,6 @@ $statut_labels = [
                 </table>
             </div>
 
-            <!-- Stock faible -->
             <div class="card">
                 <div class="card-header">
                     <h3><i class="fas fa-exclamation-triangle" style="color:#f59e0b; margin-right:8px;"></i>Stock faible</h3>

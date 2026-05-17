@@ -1,15 +1,15 @@
 <?php
-// ============================================================
-//   NOVASTORE - catalogue/cosmetiques.php
-// ============================================================
+
 
 session_start();
 require_once '../config/db.php';
+
 $pdo = getDB();
 
 $wishlist_ids = [];
 $nb_panier = 0;
-if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'client') {
+
+if (isset($_SESSION['user_id']) && ($_SESSION['role'] ?? '') === 'client') {
     $stmt = $pdo->prepare('SELECT produit_id FROM wishlist WHERE utilisateur_id = ?');
     $stmt->execute([$_SESSION['user_id']]);
     $wishlist_ids = array_column($stmt->fetchAll(), 'produit_id');
@@ -25,9 +25,33 @@ $sections = [
         'icon'  => 'fas fa-spray-can',
         'color' => '#E63946',
         'produits' => [
-            ['nom' => 'Déodorant FA',             'marque' => 'FA',       'modele' => 'Fresh & Dry – 150ml',      'prix' => 8.900,  'image' => '../images/fa.jpg',    'note' => 4.0, 'avis' => 34],
-            ['nom' => 'Brume Panorama',            'marque' => 'PANORAMA', 'modele' => 'Brume corporelle – 200ml', 'prix' => 14.500, 'image' => '../images/brume.jpg', 'note' => 4.5, 'avis' => 21],
-            ['nom' => 'Eau de Parfum Femme Sens',  'marque' => 'SENS',     'modele' => '50ml – Longue tenue',      'prix' => 39.900, 'image' => '../images/parf.jpg',  'note' => 4.5, 'avis' => 47],
+            [
+                'nom' => 'Déodorant FA',
+                'marque' => 'FA',
+                'modele' => 'Fresh & Dry – 150ml',
+                'prix' => 8.900,
+                'image' => '../images/fa.jpg',
+                'note' => 4.0,
+                'avis' => 34
+            ],
+            [
+                'nom' => 'Brume Panorama',
+                'marque' => 'PANORAMA',
+                'modele' => 'Brume corporelle – 200ml',
+                'prix' => 14.500,
+                'image' => '../images/brume.jpg',
+                'note' => 4.5,
+                'avis' => 21
+            ],
+            [
+                'nom' => 'Eau de Parfum Femme Sens',
+                'marque' => 'SENS',
+                'modele' => '50ml – Longue tenue',
+                'prix' => 39.900,
+                'image' => '../images/parf.jpg',
+                'note' => 4.5,
+                'avis' => 47
+            ],
         ]
     ],
     [
@@ -35,9 +59,33 @@ $sections = [
         'icon'  => 'fas fa-paint-brush',
         'color' => '#8b5cf6',
         'produits' => [
-            ['nom' => 'Crayon à lèvres',        'marque' => 'AS',        'modele' => 'Référence 03',             'prix' => 6.900,  'image' => '../images/crayon.jpg', 'note' => 4.0, 'avis' => 18],
-            ['nom' => 'Fards à paupières',      'marque' => 'MAYBELLINE','modele' => 'Palette – 12 couleurs',    'prix' => 24.900, 'image' => '../images/far.jpg',    'note' => 4.5, 'avis' => 62],
-            ['nom' => 'Rouge à lèvres Pump',    'marque' => 'PUMP',      'modele' => 'Rouge intense – tenue 24h','prix' => 18.500, 'image' => '../images/pump.jpg',   'note' => 4.0, 'avis' => 29],
+            [
+                'nom' => 'Crayon à lèvres',
+                'marque' => 'AS',
+                'modele' => 'Référence 03',
+                'prix' => 6.900,
+                'image' => '../images/crayon.jpg',
+                'note' => 4.0,
+                'avis' => 18
+            ],
+            [
+                'nom' => 'Fards à paupières',
+                'marque' => 'MAYBELLINE',
+                'modele' => 'Palette – 12 couleurs',
+                'prix' => 24.900,
+                'image' => '../images/far.jpg',
+                'note' => 4.5,
+                'avis' => 62
+            ],
+            [
+                'nom' => 'Rouge à lèvres Pump',
+                'marque' => 'PUMP',
+                'modele' => 'Rouge intense – tenue 24h',
+                'prix' => 18.500,
+                'image' => '../images/pump.jpg',
+                'note' => 4.0,
+                'avis' => 29
+            ],
         ]
     ],
     [
@@ -45,14 +93,70 @@ $sections = [
         'icon'  => 'fas fa-hand-sparkles',
         'color' => '#06b6d4',
         'produits' => [
-            ['nom' => 'Masque visage au charbon',            'marque' => 'GARNIER', 'modele' => 'Pure Active – 50ml',          'prix' => 12.900, 'image' => '../images/masque.jpg',   'note' => 4.5, 'avis' => 55],
-            ['nom' => 'Soin de jour nourrissant SPF15',      'marque' => 'NIVEA',   'modele' => 'Confort – 50ml',              'prix' => 16.500, 'image' => '../images/nivea.jpg',    'note' => 4.5, 'avis' => 83],
-            ['nom' => 'Eau micellaire Vitamine C tout en 1', 'marque' => 'GARNIER', 'modele' => '400ml – Éclat & Pureté',     'prix' => 14.900, 'image' => '../images/vitamine.jpg', 'note' => 4.0, 'avis' => 41],
+            [
+                'nom' => 'Masque visage au charbon',
+                'marque' => 'GARNIER',
+                'modele' => 'Pure Active – 50ml',
+                'prix' => 12.900,
+                'image' => '../images/masque.jpg',
+                'note' => 4.5,
+                'avis' => 55
+            ],
+            [
+                'nom' => 'Soin de jour nourrissant SPF15',
+                'marque' => 'NIVEA',
+                'modele' => 'Confort – 50ml',
+                'prix' => 16.500,
+                'image' => '../images/nivea.jpg',
+                'note' => 4.5,
+                'avis' => 83
+            ],
+            [
+                'nom' => 'Eau micellaire Vitamine C tout en 1',
+                'marque' => 'GARNIER',
+                'modele' => '400ml – Éclat & Pureté',
+                'prix' => 14.900,
+                'image' => '../images/vitamine.jpg',
+                'note' => 4.0,
+                'avis' => 41
+            ],
         ]
     ],
 ];
 
 $section_ids = ['parfums', 'maquillage', 'soins'];
+
+
+
+$noms_produits = [];
+
+foreach ($sections as $section) {
+    foreach ($section['produits'] as $p) {
+        $noms_produits[] = $p['nom'];
+    }
+}
+
+$produits_db_ids = [];
+
+if (!empty($noms_produits)) {
+    $placeholders = implode(',', array_fill(0, count($noms_produits), '?'));
+
+    $stmt = $pdo->prepare("
+        SELECT id, nom, stock
+        FROM produits
+        WHERE nom IN ($placeholders)
+          AND actif = 1
+    ");
+
+    $stmt->execute($noms_produits);
+
+    foreach ($stmt->fetchAll() as $row) {
+        $produits_db_ids[$row['nom']] = [
+            'id' => intval($row['id']),
+            'stock' => intval($row['stock'])
+        ];
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -60,67 +164,123 @@ $section_ids = ['parfums', 'maquillage', 'soins'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cosmétiques – NovaStore</title>
+
     <link rel="stylesheet" href="../style.css">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
         .breadcrumb {
             background: white;
             border-bottom: 1px solid #e9ecef;
             padding: 12px 0;
         }
+
         .breadcrumb-inner {
-            display: flex; align-items: center; gap: 8px;
-            font-size: 0.9rem; color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #6c757d;
         }
-        .breadcrumb-inner a { color: #E63946; text-decoration: none; }
+
+        .breadcrumb-inner a {
+            color: #E63946;
+            text-decoration: none;
+        }
 
         .page-banner {
             background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-            border-radius: 16px; padding: 32px;
-            margin-bottom: 48px; color: white; text-align: center;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 48px;
+            color: white;
+            text-align: center;
         }
+
         .page-banner h3 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.6rem; margin-bottom: 8px;
+            font-size: 1.6rem;
+            margin-bottom: 8px;
         }
-        .page-banner p { color: rgba(255,255,255,0.85); }
+
+        .page-banner p {
+            color: rgba(255,255,255,0.85);
+        }
 
         .sections-nav {
-            display: flex; gap: 10px; flex-wrap: wrap;
-            justify-content: center; margin-bottom: 48px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 48px;
         }
+
         .section-nav-btn {
-            padding: 10px 20px; border-radius: 25px;
-            border: 2px solid #e9ecef; background: white;
-            cursor: pointer; font-family: 'DM Sans', sans-serif;
-            font-weight: 600; font-size: 0.88rem; color: #374151;
-            transition: 0.2s; text-decoration: none;
-            display: flex; align-items: center; gap: 6px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 2px solid #e9ecef;
+            background: white;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: #374151;
+            transition: 0.2s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
+
         .section-nav-btn:hover {
-            border-color: #E63946; color: #E63946; background: #fce7f3;
+            border-color: #E63946;
+            color: #E63946;
+            background: #fce7f3;
         }
 
         .section-label {
-            display: flex; align-items: center; gap: 12px;
-            margin: 48px 0 24px; padding-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 48px 0 24px;
+            padding-bottom: 12px;
             border-bottom: 3px solid #f1f5f9;
         }
+
         .section-label-icon {
-            width: 42px; height: 42px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.1rem; flex-shrink: 0;
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+            flex-shrink: 0;
         }
+
         .section-label h3 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.4rem; color: #1D3557; margin: 0;
+            font-size: 1.4rem;
+            color: #1D3557;
+            margin: 0;
         }
+
         .section-label span {
-            font-size: 0.85rem; color: #6c757d; margin-left: auto;
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-left: auto;
+        }
+
+        .btn-cart-icon:disabled,
+        .wishlist-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
         }
     </style>
 </head>
+
 <body>
 
 <!-- TOP BAR -->
@@ -130,46 +290,71 @@ $section_ids = ['parfums', 'maquillage', 'soins'];
     </div>
 </div>
 
-<!-- NAVBAR -->
 <header class="navbar">
     <div class="nav-container">
+
         <a href="../index.php" class="logo" style="text-decoration:none;">
             <img src="../images/logo.png" alt="NovaStore" class="logo-img">
             Nova<strong>Store</strong>
         </a>
+
         <div class="nav-search">
             <input type="text" placeholder="Rechercher un produit..." id="search-input">
-            <button onclick="lancerRecherche()">Rechercher</button>
+            <button type="button" onclick="lancerRecherche()">Rechercher</button>
         </div>
+
         <nav class="nav-actions">
             <?php if (isset($_SESSION['user_id'])): ?>
-                <?php if ($_SESSION['role'] === 'admin'): ?>
-                    <a href="../admin/dashboard.php" class="btn-nav"><i class="fas fa-chart-pie"></i> Dashboard</a>
-                    <a href="../auth/logout.php" class="btn-nav" style="color:#E63946;"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+
+                <?php if (($_SESSION['role'] ?? '') === 'admin'): ?>
+
+                    <a href="../admin/dashboard.php" class="btn-nav">
+                        <i class="fas fa-chart-pie"></i> Dashboard
+                    </a>
+
+                    <a href="../auth/logout.php" class="btn-nav" style="color:#E63946;">
+                        <i class="fas fa-sign-out-alt"></i> Déconnexion
+                    </a>
+
                 <?php else: ?>
-                    <a href="../client/profil.php" class="btn-nav"><i class="fas fa-user"></i> <?= htmlspecialchars($_SESSION['prenom']) ?></a>
+
+                    <a href="../client/profil.php" class="btn-nav">
+                        <i class="fas fa-user"></i>
+                        <?= htmlspecialchars($_SESSION['prenom'] ?? 'Profil') ?>
+                    </a>
+
                     <a href="../client/panier.php" class="btn-nav btn-primary">
                         <i class="fas fa-shopping-cart"></i> Panier
+
                         <?php if ($nb_panier > 0): ?>
-                        <span style="background:white;color:#E63946;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;margin-left:4px;">
-                            <?= $nb_panier ?>
-                        </span>
+                            <span id="panier-badge" style="background:white;color:#E63946;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;margin-left:4px;">
+                                <?= $nb_panier ?>
+                            </span>
+                        <?php else: ?>
+                            <span id="panier-badge" style="display:none;"></span>
                         <?php endif; ?>
                     </a>
+
                 <?php endif; ?>
+
             <?php else: ?>
+
                 <a href="../auth/login.php" class="btn-nav">Connexion</a>
                 <a href="../auth/register.php" class="btn-nav btn-primary">S'inscrire</a>
+
             <?php endif; ?>
-            <button id="theme-toggle" onclick="toggleTheme()"
-                style="background:white;border:2px solid #e9ecef;border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:0.3s;flex-shrink:0;">
+
+            <button id="theme-toggle"
+                    type="button"
+                    onclick="toggleTheme()"
+                    style="background:white;border:2px solid #e9ecef;border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:0.3s;flex-shrink:0;">
                 🌙
             </button>
         </nav>
+
     </div>
 </header>
 
-<!-- BREADCRUMB -->
 <div class="breadcrumb">
     <div class="container">
         <div class="breadcrumb-inner">
@@ -180,170 +365,226 @@ $section_ids = ['parfums', 'maquillage', 'soins'];
     </div>
 </div>
 
-<!-- CONTENU -->
 <section style="padding:50px 0;">
-    <div class="container">
 
-        <div class="page-banner">
-            <h3>Rayon Cosmétiques</h3>
-            <p>Parfums, maquillage et soins pour prendre soin de vous !</p>
-        </div>
-
-        <!-- Navigation rapide -->
         <div class="sections-nav">
-            <a href="#parfums"    class="section-nav-btn"><i class="fas fa-spray-can"></i> Parfums</a>
-            <a href="#maquillage" class="section-nav-btn"><i class="fas fa-paint-brush"></i> Maquillage</a>
-            <a href="#soins"      class="section-nav-btn"><i class="fas fa-hand-sparkles"></i> Soins</a>
+            <a href="#parfums" class="section-nav-btn">
+                <i class="fas fa-spray-can"></i> Parfums
+            </a>
+
+            <a href="#maquillage" class="section-nav-btn">
+                <i class="fas fa-paint-brush"></i> Maquillage
+            </a>
+
+            <a href="#soins" class="section-nav-btn">
+                <i class="fas fa-hand-sparkles"></i> Soins
+            </a>
         </div>
 
         <?php foreach ($sections as $i => $section): ?>
-        <div id="<?= $section_ids[$i] ?>">
-            <div class="section-label">
-                <div class="section-label-icon" style="background:<?= $section['color'] ?>;">
-                    <i class="<?= $section['icon'] ?>"></i>
-                </div>
-                <h3><?= $section['titre'] ?></h3>
-                <span><?= count($section['produits']) ?> produit<?= count($section['produits']) > 1 ? 's' : '' ?></span>
-            </div>
+            <div id="<?= htmlspecialchars($section_ids[$i]) ?>">
 
-            <div class="products-grid">
-                <?php foreach ($section['produits'] as $p):
-                    $prix_parts = explode('.', number_format($p['prix'], 3, '.', ''));
-                    $marque     = $p['marque'] ?? '';
-                    $modele     = $p['modele'] ?? '';
-                ?>
-                <div class="product-card">
-                    <button class="wishlist-btn">
-                        <i class="far fa-heart"></i>
-                    </button>
-                    <div class="product-img-box">
-                        <img src="<?= htmlspecialchars($p['image']) ?>" alt="<?= htmlspecialchars($p['nom']) ?>">
+                <div class="section-label">
+                    <div class="section-label-icon" style="background:<?= htmlspecialchars($section['color']) ?>;">
+                        <i class="<?= htmlspecialchars($section['icon']) ?>"></i>
                     </div>
-                    <div class="product-info">
-                        <div class="product-footer-price">
-                            <div class="price-container">
-                                <span class="price-main"><?= $prix_parts[0] ?></span>
-                                <span class="price-currency">DT</span>
-                                <span class="price-cents"><?= $prix_parts[1] ?? '000' ?></span>
-                            </div>
-                            <button class="btn-cart-icon"
-                                onclick="ajouterAuPanier('<?= htmlspecialchars(addslashes($p['nom'])) ?>')">
-                                <i class="fas fa-shopping-cart"></i>
-                            </button>
-                        </div>
 
-                        <?php if ($marque): ?>
-                        <span class="brand-tag"><?= htmlspecialchars($marque) ?></span>
-                        <?php endif; ?>
+                    <h3><?= htmlspecialchars($section['titre']) ?></h3>
 
-                        <h3 class="product-name"><?= htmlspecialchars($p['nom']) ?></h3>
+                    <span>
+                        <?= count($section['produits']) ?>
+                        produit<?= count($section['produits']) > 1 ? 's' : '' ?>
+                    </span>
+                </div>
 
-                        <?php if ($modele): ?>
-                        <p class="product-model"><?= htmlspecialchars($modele) ?></p>
-                        <?php endif; ?>
+                <div class="products-grid">
+                    <?php foreach ($section['produits'] as $p): ?>
+                        <?php
+                        $prix_parts = explode('.', number_format($p['prix'], 3, '.', ''));
+                        $marque = $p['marque'] ?? '';
+                        $modele = $p['modele'] ?? '';
+                        $produit_db = $produits_db_ids[$p['nom']] ?? null;
 
-                        <div class="rating">
-                            <?php for ($j = 1; $j <= 5; $j++): ?>
-                                <i class="<?= $j <= round($p['note']) ? 'fas' : 'far' ?> fa-star"></i>
-                            <?php endfor; ?>
-                            <?php if ($p['avis'] > 0): ?>
-                            <span style="font-size:0.8rem; color:#6c757d; margin-left:4px;">(<?= $p['avis'] ?>)</span>
+                        $is_in_wishlist = false;
+                        if ($produit_db) {
+                            $is_in_wishlist = in_array($produit_db['id'], array_map('intval', $wishlist_ids));
+                        }
+                        ?>
+
+                        <div class="product-card">
+
+                            <?php if ($produit_db): ?>
+                                <button class="wishlist-btn <?= $is_in_wishlist ? 'active' : '' ?>"
+                                        type="button"
+                                        data-id="<?= $produit_db['id'] ?>">
+                                    <i class="<?= $is_in_wishlist ? 'fas' : 'far' ?> fa-heart"></i>
+                                </button>
+                            <?php else: ?>
+                                <button class="wishlist-btn"
+                                        type="button"
+                                        disabled
+                                        title="Produit non disponible">
+                                    <i class="far fa-heart"></i>
+                                </button>
                             <?php endif; ?>
+
+                            <div class="product-img-box">
+                                <img src="<?= htmlspecialchars($p['image']) ?>"
+                                     alt="<?= htmlspecialchars($p['nom']) ?>">
+                            </div>
+
+                            <div class="product-info">
+
+                                <div class="product-footer-price">
+                                    <div class="price-container">
+                                        <span class="price-main"><?= htmlspecialchars($prix_parts[0]) ?></span>
+                                        <span class="price-currency">DT</span>
+                                        <span class="price-cents"><?= htmlspecialchars($prix_parts[1] ?? '000') ?></span>
+                                    </div>
+
+                                    <?php if ($produit_db && $produit_db['stock'] > 0): ?>
+                                        <button class="btn-cart-icon"
+                                                type="button"
+                                                data-id="<?= $produit_db['id'] ?>">
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </button>
+                                    <?php else: ?>
+                                        <button class="btn-cart-icon"
+                                                type="button"
+                                                disabled
+                                                title="Produit non disponible">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    <?php endif; ?>
+                                </div>
+
+                                <?php if ($marque): ?>
+                                    <span class="brand-tag"><?= htmlspecialchars($marque) ?></span>
+                                <?php endif; ?>
+
+                                <h3 class="product-name"><?= htmlspecialchars($p['nom']) ?></h3>
+
+                                <?php if ($modele): ?>
+                                    <p class="product-model"><?= htmlspecialchars($modele) ?></p>
+                                <?php endif; ?>
+
+                                <div class="rating">
+                                    <?php for ($j = 1; $j <= 5; $j++): ?>
+                                        <i class="<?= $j <= round($p['note']) ? 'fas' : 'far' ?> fa-star"></i>
+                                    <?php endfor; ?>
+
+                                    <?php if ($p['avis'] > 0): ?>
+                                        <span style="font-size:0.8rem; color:#6c757d; margin-left:4px;">
+                                            (<?= intval($p['avis']) ?>)
+                                        </span>
+                                    <?php endif; ?>
+                                </div>
+
+                                <?php if (!$produit_db): ?>
+                                    <p style="margin-top:8px;font-size:0.78rem;color:#f59e0b;font-weight:600;">
+                                        Produit à ajouter dans la base pour activer le panier.
+                                    </p>
+                                <?php endif; ?>
+
+                            </div>
                         </div>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
-                <?php endforeach; ?>
+
             </div>
-        </div>
         <?php endforeach; ?>
 
     </div>
 </section>
 
-<!-- FOOTER -->
 <footer class="footer">
     <div class="container">
+
         <div class="footer-grid">
+
             <div>
                 <div class="logo-footer">
                     <img src="../images/logo.png" alt="NovaStore" class="logo-img-footer">
                 </div>
                 <p>La qualité professionnelle au service de votre quotidien.</p>
             </div>
+
             <div>
                 <h4>Aide & Service</h4>
                 <a href="#">Livraison</a>
                 <a href="#">Retours</a>
                 <a href="#">Conditions générales</a>
             </div>
+
             <div>
                 <h4>Contactez-nous</h4>
                 <a href="tel:+21672772779">+216 72 772 779</a>
                 <a href="mailto:contact@novastore.com">contact@novastore.com</a>
                 <p>123 Ghazela 2, Ariana</p>
             </div>
+
             <div>
                 <h4>Suivez-nous</h4>
                 <div class="social-links">
-                    <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
-                    <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
+                    <a href="https://instagram.com" target="_blank">
+                        <i class="fab fa-instagram"></i> Instagram
+                    </a>
+
+                    <a href="https://facebook.com" target="_blank">
+                        <i class="fab fa-facebook"></i> Facebook
+                    </a>
                 </div>
             </div>
+
         </div>
+
         <div class="footer-bottom">
             <p>&copy; <?= date('Y') ?> NovaStore. Tous droits réservés.</p>
         </div>
+
     </div>
 </footer>
 
 <script>
+    window.BASE_URL = '../';
+
     function lancerRecherche() {
         const q = document.getElementById('search-input').value.trim();
-        if (q) window.location.href = `../search.php?q=${encodeURIComponent(q)}`;
-    }
-    document.getElementById('search-input')?.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') lancerRecherche();
-    });
 
-    function ajouterAuPanier(nom) {
-        <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'client'): ?>
-        const toast = document.createElement('div');
-        toast.style.cssText = `
-            position:fixed; bottom:30px; right:30px;
-            background:#10b981; color:white;
-            padding:14px 24px; border-radius:50px;
-            font-weight:600; font-family:'DM Sans',sans-serif;
-            font-size:0.95rem; z-index:99999;
-            box-shadow:0 4px 20px rgba(16,185,129,0.4);
-        `;
-        toast.innerHTML = '✅ ' + nom + ' ajouté au panier !';
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
-        <?php else: ?>
-        window.location.href = '../auth/login.php';
-        <?php endif; ?>
+        if (q) {
+            window.location.href = `../search.php?q=${encodeURIComponent(q)}`;
+        }
     }
+
+    document.getElementById('search-input')?.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            lancerRecherche();
+        }
+    });
 
     function toggleTheme() {
         const body = document.body;
-        const btn  = document.getElementById('theme-toggle');
+        const btn = document.getElementById('theme-toggle');
+
         body.classList.toggle('dark');
+
         if (body.classList.contains('dark')) {
-            btn.textContent = '☀️';
+            if (btn) btn.textContent = '☀️';
             localStorage.setItem('theme', 'dark');
         } else {
-            btn.textContent = '🌙';
+            if (btn) btn.textContent = '🌙';
             localStorage.setItem('theme', 'light');
         }
     }
-    (function() {
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark');
-            const btn = document.getElementById('theme-toggle');
-            if (btn) btn.textContent = '☀️';
-        }
-    })();
+
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark');
+
+        const btn = document.getElementById('theme-toggle');
+        if (btn) btn.textContent = '☀️';
+    }
 </script>
+
 <script src="../main.js"></script>
 
 </body>

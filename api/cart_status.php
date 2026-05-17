@@ -1,8 +1,4 @@
 <?php
-// ============================================================
-//   NOVASTORE - api/cart_status.php
-//   Retourne le nombre d'articles dans le panier (AJAX)
-// ============================================================
 
 session_start();
 header('Content-Type: application/json');
@@ -23,7 +19,6 @@ $stmt2 = $pdo->prepare('SELECT COUNT(*) FROM wishlist WHERE utilisateur_id = ?')
 $stmt2->execute([$_SESSION['user_id']]);
 $wishlist = intval($stmt2->fetchColumn());
 
-// IDs des produits en wishlist (pour colorier les coeurs)
 $stmt3 = $pdo->prepare('SELECT produit_id FROM wishlist WHERE utilisateur_id = ?');
 $stmt3->execute([$_SESSION['user_id']]);
 $wishlist_ids = array_column($stmt3->fetchAll(), 'produit_id');

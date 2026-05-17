@@ -65,7 +65,7 @@ INSERT INTO produits (categorie_id, marque, nom, modele, prix, stock, image, not
 (6, 'KENWOOD',  'Mixeur Plongeant Triblade',      'Moteur puissant - Accessoires inclus', 120.000, 25, 'images/mixeur.jpg',          4.0, 17),
 -- Alimentaire
 (1, 'EL MAZRAA','Plateau d\'œufs frais',          'Le plateau de 30 pièces',              13.500, 100,'images/plateau.jpg',         5.0, 88),
-(1, 'FRUITS',   'Bananes Importées (1kg)',         'Origine : Équateur',                   20.000, 50, 'images/banan.jpg',           4.0, 42),
+(1, 'FRUITS',   'Bananes Importées (1kg)',         'Origine : Équateur',                   20.000, 50, 'images/bounan.jpg',          4.0, 42),
 (1, 'DELICE',   'Lait',                            '100ml',                                2.990,  200,'images/lait.jpg',            0.0, 0),
 (1, 'BOULANGERIE','Pain de mie complet (Toast)',  'Sachet de 500g',                        2.350, 120, 'images/toast.jpg',           4.0, 23),
 -- Nettoyage

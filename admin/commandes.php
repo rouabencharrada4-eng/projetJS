@@ -1,8 +1,4 @@
 <?php
-// ============================================================
-//   NOVASTORE - admin/commandes.php
-//   Gestion des commandes
-// ============================================================
 
 session_start();
 
@@ -16,7 +12,6 @@ $pdo = getDB();
 
 $message = '';
 
-// ---- Changer le statut d'une commande ----
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['commande_id'], $_POST['statut'])) {
     $statuts_valides = ['en_attente','confirmee','en_preparation','expediee','livree','annulee'];
     if (in_array($_POST['statut'], $statuts_valides)) {
@@ -26,7 +21,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['commande_id'], $_POST
     }
 }
 
-// ---- Filtres ----
 $filtre_statut = $_GET['statut'] ?? '';
 $search        = trim($_GET['search'] ?? '');
 

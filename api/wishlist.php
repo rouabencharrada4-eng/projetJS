@@ -1,8 +1,5 @@
 <?php
-// ============================================================
-//   NOVASTORE - api/wishlist.php
-//   Ajouter / retirer un produit de la wishlist (AJAX)
-// ============================================================
+
 
 session_start();
 header('Content-Type: application/json');
@@ -28,19 +25,16 @@ if (!$produit_id) {
     exit;
 }
 
-// Vérifier si déjà en wishlist
 $stmt = $pdo->prepare('SELECT id FROM wishlist WHERE utilisateur_id = ? AND produit_id = ?');
 $stmt->execute([$_SESSION['user_id'], $produit_id]);
 $existant = $stmt->fetch();
 
 if ($existant) {
-    // Retirer de la wishlist
     $pdo->prepare('DELETE FROM wishlist WHERE id = ?')->execute([$existant['id']]);
     $action  = 'removed';
     $message = 'Retiré de vos favoris.';
     $active  = false;
 } else {
-    // Ajouter à la wishlist
     $pdo->prepare('INSERT INTO wishlist (utilisateur_id, produit_id) VALUES (?, ?)')
         ->execute([$_SESSION['user_id'], $produit_id]);
     $action  = 'added';
@@ -48,7 +42,6 @@ if ($existant) {
     $active  = true;
 }
 
-// Total wishlist
 $stmt = $pdo->prepare('SELECT COUNT(*) FROM wishlist WHERE utilisateur_id = ?');
 $stmt->execute([$_SESSION['user_id']]);
 $total_wishlist = intval($stmt->fetchColumn());

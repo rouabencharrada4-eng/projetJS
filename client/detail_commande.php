@@ -1,8 +1,4 @@
 <?php
-// ============================================================
-//   NOVASTORE - client/detail_commande.php
-//   Détail d'une commande (chargé en AJAX pour le modal)
-// ============================================================
 
 session_start();
 

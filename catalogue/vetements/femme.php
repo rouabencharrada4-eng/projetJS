@@ -1,14 +1,17 @@
 <?php
-// ============================================================
-//   NOVASTORE - catalogue/vetements/femme.php
-// ============================================================
-
 session_start();
 require_once '../../config/db.php';
+
 $pdo = getDB();
 
+$wishlist_ids = [];
 $nb_panier = 0;
-if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'client') {
+
+if (isset($_SESSION['user_id']) && ($_SESSION['role'] ?? '') === 'client') {
+    $stmt = $pdo->prepare('SELECT produit_id FROM wishlist WHERE utilisateur_id = ?');
+    $stmt->execute([$_SESSION['user_id']]);
+    $wishlist_ids = array_column($stmt->fetchAll(), 'produit_id');
+
     $stmt2 = $pdo->prepare('SELECT COALESCE(SUM(quantite),0) FROM panier WHERE utilisateur_id=?');
     $stmt2->execute([$_SESSION['user_id']]);
     $nb_panier = intval($stmt2->fetchColumn());
@@ -16,54 +19,230 @@ if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'client') {
 
 $produits = [
     [
-        'id'      => 'femme-1',
-        'nom'     => 'Ensemble Simple',
-        'marque'  => 'NOVASTORE',
-        'modele'  => '100% Coton – Confort & Style',
-        'prix'    => 49.900,
-        'image'   => '../../images/ensemble.jpg',
-        'note'    => 4.5,
-        'avis'    => 38,
+        'nom' => 'Ensemble Simple',
+        'marque' => 'NOVASTORE',
+        'modele' => '100% Coton – Confort & Style',
+        'prix' => 49.900,
+        'stock' => 20,
+        'image' => 'images/ensemble.jpg',
+        'image_page' => '../../images/ensemble.jpg',
+        'note' => 4.5,
+        'avis' => 38,
         'tailles' => ['XS', 'S', 'M', 'L'],
-        'couleurs'=> [
-            ['nom' => 'Gris',  'hex' => '#9ca3af'],
+        'couleurs' => [
+            ['nom' => 'Gris', 'hex' => '#9ca3af'],
             ['nom' => 'Blanc', 'hex' => '#f9fafb'],
-            ['nom' => 'Noir',  'hex' => '#111827'],
+            ['nom' => 'Noir', 'hex' => '#111827'],
         ],
     ],
     [
-        'id'      => 'femme-2',
-        'nom'     => 'Ensemble Rayé',
-        'marque'  => 'NOVASTORE',
-        'modele'  => '100% Coton – Rayures tendance',
-        'prix'    => 54.900,
-        'image'   => '../../images/ensemble2.jpg',
-        'note'    => 4.0,
-        'avis'    => 24,
+        'nom' => 'Ensemble Rayé',
+        'marque' => 'NOVASTORE',
+        'modele' => '100% Coton – Rayures tendance',
+        'prix' => 54.900,
+        'stock' => 20,
+        'image' => 'images/ensemble2.jpg',
+        'image_page' => '../../images/ensemble2.jpg',
+        'note' => 4.0,
+        'avis' => 24,
         'tailles' => ['XS', 'S', 'M', 'L'],
-        'couleurs'=> [
+        'couleurs' => [
             ['nom' => 'Marron', 'hex' => '#78350f'],
-            ['nom' => 'Beige',  'hex' => '#d4b483'],
-            ['nom' => 'Blanc',  'hex' => '#f9fafb'],
-            ['nom' => 'Noir',   'hex' => '#111827'],
+            ['nom' => 'Beige', 'hex' => '#d4b483'],
+            ['nom' => 'Blanc', 'hex' => '#f9fafb'],
+            ['nom' => 'Noir', 'hex' => '#111827'],
         ],
     ],
     [
-        'id'      => 'femme-3',
-        'nom'     => 'Pyjama / Ensemble Nuit',
-        'marque'  => 'NOVASTORE',
-        'modele'  => 'Coton doux – Confort nuit',
-        'prix'    => 39.900,
-        'image'   => '../../images/ensemble.jpg',
-        'note'    => 4.5,
-        'avis'    => 51,
+        'nom' => 'Pyjama / Ensemble Nuit',
+        'marque' => 'NOVASTORE',
+        'modele' => 'Coton doux – Confort nuit',
+        'prix' => 39.900,
+        'stock' => 20,
+        'image' => 'images/ensemble.jpg',
+        'image_page' => '../../images/ensemble.jpg',
+        'note' => 4.5,
+        'avis' => 51,
         'tailles' => ['XS', 'S', 'M', 'L'],
-        'couleurs'=> [
+        'couleurs' => [
             ['nom' => 'Jaune + Rose', 'hex' => '#fbbf24', 'hex2' => '#f9a8d4'],
-            ['nom' => 'Bleu + Rose',  'hex' => '#60a5fa', 'hex2' => '#f9a8d4'],
+            ['nom' => 'Bleu + Rose', 'hex' => '#60a5fa', 'hex2' => '#f9a8d4'],
         ],
     ],
 ];
+
+function normaliserNom($texte) {
+    $texte = mb_strtolower(trim((string)$texte), 'UTF-8');
+    $texte = strtr($texte, [
+        'œ' => 'oe', 'Œ' => 'oe',
+        'é' => 'e', 'è' => 'e', 'ê' => 'e', 'ë' => 'e',
+        'à' => 'a', 'â' => 'a', 'ä' => 'a',
+        'î' => 'i', 'ï' => 'i',
+        'ô' => 'o', 'ö' => 'o',
+        'ù' => 'u', 'û' => 'u', 'ü' => 'u',
+        'ç' => 'c',
+        '’' => "'", '`' => "'",
+    ]);
+    $texte = preg_replace('/\s+/', ' ', $texte);
+    return trim($texte);
+}
+
+function getCategorieVetementsId($pdo) {
+    $stmt = $pdo->prepare("
+        SELECT id FROM categories
+        WHERE slug IN ('vetements', 'vêtements')
+           OR LOWER(nom) LIKE '%vetement%'
+           OR LOWER(nom) LIKE '%vêtement%'
+        LIMIT 1
+    ");
+    $stmt->execute();
+    $id = $stmt->fetchColumn();
+
+    if ($id) {
+        return intval($id);
+    }
+
+    return 1;
+}
+
+function assurerProduitExiste($pdo, $p) {
+    $stmt = $pdo->prepare('SELECT * FROM produits WHERE nom = ? LIMIT 1');
+    $stmt->execute([$p['nom']]);
+    $db = $stmt->fetch();
+
+    if ($db) {
+        return $db;
+    }
+
+    $categorie_id = getCategorieVetementsId($pdo);
+
+    $stmt = $pdo->prepare('
+        INSERT INTO produits
+        (categorie_id, marque, nom, description, modele, prix, stock, image, badge, note_moyenne, nb_avis, actif)
+        VALUES (?, ?, ?, NULL, ?, ?, ?, ?, NULL, ?, ?, 1)
+    ');
+
+    $stmt->execute([
+        $categorie_id,
+        $p['marque'],
+        $p['nom'],
+        $p['modele'],
+        $p['prix'],
+        $p['stock'],
+        $p['image'],
+        $p['note'],
+        $p['avis']
+    ]);
+
+    $id = $pdo->lastInsertId();
+
+    $stmt = $pdo->prepare('SELECT * FROM produits WHERE id = ? LIMIT 1');
+    $stmt->execute([$id]);
+    return $stmt->fetch();
+}
+
+foreach ($produits as $k => $p) {
+    $db = assurerProduitExiste($pdo, $p);
+
+    $produits[$k]['id'] = intval($db['id']);
+    $produits[$k]['stock'] = intval($db['stock']);
+    $produits[$k]['prix'] = floatval($db['prix']);
+    $produits[$k]['note'] = floatval($db['note_moyenne'] ?? $p['note']);
+    $produits[$k]['avis'] = intval($db['nb_avis'] ?? $p['avis']);
+    $produits[$k]['marque'] = $db['marque'] ?: $p['marque'];
+    $produits[$k]['modele'] = $db['modele'] ?: $p['modele'];
+}
+
+function etoiles($note) {
+    $html = '';
+    for ($i = 1; $i <= 5; $i++) {
+        $html .= $i <= round(floatval($note))
+            ? '<i class="fas fa-star"></i>'
+            : '<i class="far fa-star"></i>';
+    }
+    return $html;
+}
+
+function carteVetement($p, $wishlist_ids) {
+    $id = intval($p['id']);
+    $stock = intval($p['stock']);
+    $prix_parts = explode('.', number_format(floatval($p['prix']), 3, '.', ''));
+
+    $wishlist_ids_int = array_map('intval', $wishlist_ids);
+    $in_wishlist = in_array($id, $wishlist_ids_int);
+
+    ob_start();
+    ?>
+    <div class="clothes-card">
+        <div class="clothes-img-box">
+            <img src="<?= htmlspecialchars($p['image_page']) ?>" alt="<?= htmlspecialchars($p['nom']) ?>" class="clothes-img">
+        </div>
+
+        <div class="clothes-body">
+            <div class="top-row">
+                <span class="brand-tag"><?= htmlspecialchars($p['marque']) ?></span>
+
+                <button class="wishlist-btn <?= $in_wishlist ? 'active' : '' ?>"
+                        type="button"
+                        data-id="<?= $id ?>">
+                    <i class="<?= $in_wishlist ? 'fas' : 'far' ?> fa-heart"></i>
+                </button>
+            </div>
+
+            <div class="clothes-price">
+                <?= htmlspecialchars($prix_parts[0]) ?><small>.<?= htmlspecialchars($prix_parts[1] ?? '000') ?></small> DT
+            </div>
+
+            <h3 class="clothes-name"><?= htmlspecialchars($p['nom']) ?></h3>
+            <p class="clothes-model"><?= htmlspecialchars($p['modele']) ?></p>
+
+            <div class="rating">
+                <?= etoiles($p['note']) ?>
+                <span style="font-size:0.8rem;color:#6c757d;margin-left:4px;">(<?= intval($p['avis']) ?>)</span>
+            </div>
+
+            <div class="options-label">Tailles disponibles</div>
+            <div class="tailles-row">
+                <?php foreach ($p['tailles'] as $i => $t): ?>
+                    <button type="button" class="taille-pill <?= $i === 0 ? 'selected' : '' ?>">
+                        <?= htmlspecialchars($t) ?>
+                    </button>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="options-label">Couleurs disponibles</div>
+            <div class="couleurs-row">
+                <?php foreach ($p['couleurs'] as $i => $c): ?>
+                    <?php if (isset($c['hex2'])): ?>
+                        <button type="button"
+                                class="couleur-dot bicolor <?= $i === 0 ? 'selected' : '' ?>"
+                                style="--c1:<?= htmlspecialchars($c['hex']) ?>;--c2:<?= htmlspecialchars($c['hex2']) ?>;"
+                                title="<?= htmlspecialchars($c['nom']) ?>"></button>
+                    <?php else: ?>
+                        <button type="button"
+                                class="couleur-dot <?= $i === 0 ? 'selected' : '' ?>"
+                                style="background:<?= htmlspecialchars($c['hex']) ?>;<?= $c['hex'] === '#f9fafb' ? 'border-color:#cbd5e1;' : '' ?>"
+                                title="<?= htmlspecialchars($c['nom']) ?>"></button>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
+
+            <?php if ($stock > 0): ?>
+                <button class="btn-add-clothes btn-cart-icon" type="button" data-id="<?= $id ?>">
+                    <i class="fas fa-shopping-cart"></i>
+                    Ajouter au panier
+                </button>
+            <?php else: ?>
+                <button class="btn-add-clothes" type="button" disabled>
+                    <i class="fas fa-ban"></i>
+                    Rupture de stock
+                </button>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -71,249 +250,218 @@ $produits = [
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vêtements Femme – NovaStore</title>
+
     <link rel="stylesheet" href="../../style.css">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
-        .breadcrumb {
-            background: white;
-            border-bottom: 1px solid #e9ecef;
-            padding: 12px 0;
-        }
-        .breadcrumb-inner {
-            display: flex; align-items: center; gap: 8px;
-            font-size: 0.9rem; color: #6c757d;
-        }
-        .breadcrumb-inner a { color: #E63946; text-decoration: none; }
+        .breadcrumb { background:white; border-bottom:1px solid #e9ecef; padding:12px 0; }
+        .breadcrumb-inner { display:flex; align-items:center; gap:8px; font-size:0.9rem; color:#6c757d; }
+        .breadcrumb-inner a { color:#E63946; text-decoration:none; }
 
         .page-banner {
-            background: linear-gradient(135deg, #f472b6, #db2777);
-            border-radius: 16px; padding: 32px;
-            margin-bottom: 48px; color: white; text-align: center;
+            background:linear-gradient(135deg,#f472b6,#be185d);
+            border-radius:16px;
+            padding:32px;
+            margin-bottom:42px;
+            color:white;
+            text-align:center;
         }
+
         .page-banner h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.6rem; margin-bottom: 8px;
-        }
-        .page-banner p { color: rgba(255,255,255,0.85); }
-
-        /* Cards produits vêtements */
-        .vetement-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 32px;
-            max-width: 1100px;
-            margin: 0 auto;
+            font-family:'Playfair Display',serif;
+            font-size:1.7rem;
+            margin-bottom:8px;
         }
 
-        .vetement-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: 1px solid #f0f0f0;
-        }
-        .vetement-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        .clothes-grid {
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+            gap:28px;
         }
 
-        .vetement-img {
-            width: 100%;
-            height: 280px;
-            object-fit: cover;
-            background: #f8f9fa;
+        .clothes-card {
+            background:white;
+            border:1px solid #eef2f7;
+            border-radius:16px;
+            overflow:hidden;
+            box-shadow:0 4px 16px rgba(0,0,0,0.06);
         }
 
-        .vetement-body {
-            padding: 20px;
+        .clothes-img-box {
+            width:100%;
+            height:290px;
+            background:#f8fafc;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            overflow:hidden;
+            border-bottom:1px solid #f1f5f9;
         }
 
-        .vetement-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
+        .clothes-img {
+            width:100%;
+            height:100%;
+            object-fit:contain;
+            object-position:center center;
+            padding:12px;
+            display:block;
         }
 
-        .vetement-name {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #1D3557;
-        }
-        .vetement-modele {
-            font-size: 0.85rem;
-            color: #6c757d;
-            margin-top: 2px;
-        }
-        .vetement-price {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #007bff;
-            white-space: nowrap;
+        .clothes-body { padding:18px; }
+
+        .top-row {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:12px;
         }
 
-        /* Tailles */
+        .clothes-price {
+            font-size:1.7rem;
+            font-weight:800;
+            color:#007bff;
+            margin-bottom:10px;
+        }
+
+        .clothes-price small { font-size:0.95rem; }
+
+        .clothes-name {
+            font-size:1.05rem;
+            color:#0f172a;
+            font-weight:800;
+            margin-bottom:6px;
+        }
+
+        .clothes-model {
+            color:#64748b;
+            font-size:0.9rem;
+            margin-bottom:10px;
+        }
+
+        .rating {
+            color:#ffc107;
+            font-size:0.86rem;
+            display:flex;
+            gap:2px;
+            align-items:center;
+            margin:10px 0 16px;
+        }
+
         .options-label {
-            font-size: 0.82rem;
-            font-weight: 700;
-            color: #374151;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 14px 0 8px;
+            font-size:0.78rem;
+            font-weight:800;
+            color:#334155;
+            text-transform:uppercase;
+            letter-spacing:0.4px;
+            margin:12px 0 8px;
         }
 
-        .tailles-row {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 4px;
+        .tailles-row, .couleurs-row {
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
         }
 
-        .taille-btn {
-            width: 42px;
-            height: 42px;
-            border-radius: 8px;
-            border: 2px solid #e9ecef;
-            background: white;
-            cursor: pointer;
-            font-family: 'DM Sans', sans-serif;
-            font-weight: 700;
-            font-size: 0.85rem;
-            color: #374151;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .taille-btn:hover, .taille-btn.selected {
-            border-color: #E63946;
-            background: #E63946;
-            color: white;
+        .taille-pill {
+            padding:6px 12px;
+            border-radius:8px;
+            border:1.5px solid #e2e8f0;
+            background:white;
+            color:#0f172a;
+            font-weight:700;
+            cursor:pointer;
         }
 
-        /* Couleurs */
-        .couleurs-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 4px;
+        .taille-pill.selected,
+        .taille-pill:hover {
+            border-color:#1D3557;
+            background:#1D3557;
+            color:white;
         }
 
-        .couleur-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 3px solid #e9ecef;
-            cursor: pointer;
-            transition: 0.2s;
-            position: relative;
-            flex-shrink: 0;
-        }
-        .couleur-btn:hover, .couleur-btn.selected {
-            border-color: #E63946;
-            transform: scale(1.15);
-        }
-        .couleur-btn.bicolor {
-            background: linear-gradient(135deg, var(--c1) 50%, var(--c2) 50%);
-        }
-        .couleur-nom {
-            font-size: 0.8rem;
-            color: #6c757d;
-            margin-left: 6px;
-            align-self: center;
+        .couleur-dot {
+            width:28px;
+            height:28px;
+            border-radius:50%;
+            border:2px solid #e2e8f0;
+            cursor:pointer;
         }
 
-        /* Rating */
-        .vetement-rating {
-            color: #ffc107;
-            font-size: 0.85rem;
-            display: flex;
-            gap: 2px;
-            margin: 12px 0;
+        .couleur-dot.bicolor {
+            background:linear-gradient(135deg,var(--c1) 50%,var(--c2) 50%);
         }
 
-        /* Bouton ajouter */
-        .btn-ajouter {
-            width: 100%;
-            padding: 12px;
-            background: #1D3557;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-family: 'DM Sans', sans-serif;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 16px;
+        .couleur-dot.selected,
+        .couleur-dot:hover {
+            outline:3px solid rgba(29,53,87,0.18);
+            border-color:#1D3557;
+            transform:scale(1.08);
         }
-        .btn-ajouter:hover { background: #E63946; }
 
-        /* Tooltip couleur */
-        .couleur-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            position: relative;
+        .btn-add-clothes {
+            width:100%;
+            margin-top:18px;
+            padding:13px 16px;
+            border-radius:10px;
+            border:none;
+            background:#1D3557;
+            color:white;
+            font-family:'DM Sans',sans-serif;
+            font-weight:800;
+            font-size:0.95rem;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:8px;
         }
-        .couleur-wrapper:hover .couleur-tooltip {
-            display: block;
-        }
-        .couleur-tooltip {
-            display: none;
-            position: absolute;
-            bottom: 120%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1D3557;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            white-space: nowrap;
-            z-index: 10;
+
+        .btn-add-clothes:hover { background:#E63946; }
+        .btn-add-clothes:disabled { opacity:0.45; cursor:not-allowed; }
+
+        @media(max-width:768px) {
+            .clothes-grid { grid-template-columns:1fr; }
+            .clothes-img-box { height:260px; }
         }
     </style>
 </head>
 <body>
 
-<!-- TOP BAR -->
 <div class="top-bar">
     <div class="container-top-bar">
         <p>Livraison gratuite depuis 200 DT !</p>
     </div>
 </div>
 
-<!-- NAVBAR -->
 <header class="navbar">
     <div class="nav-container">
         <a href="../../index.php" class="logo" style="text-decoration:none;">
             <img src="../../images/logo.png" alt="NovaStore" class="logo-img">
             Nova<strong>Store</strong>
         </a>
+
         <div class="nav-search">
             <input type="text" placeholder="Rechercher un produit..." id="search-input">
-            <button onclick="lancerRecherche()">Rechercher</button>
+            <button type="button" onclick="lancerRecherche()">Rechercher</button>
         </div>
+
         <nav class="nav-actions">
             <?php if (isset($_SESSION['user_id'])): ?>
-                <?php if ($_SESSION['role'] === 'admin'): ?>
+                <?php if (($_SESSION['role'] ?? '') === 'admin'): ?>
                     <a href="../../admin/dashboard.php" class="btn-nav"><i class="fas fa-chart-pie"></i> Dashboard</a>
                     <a href="../../auth/logout.php" class="btn-nav" style="color:#E63946;"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
                 <?php else: ?>
-                    <a href="../../client/profil.php" class="btn-nav"><i class="fas fa-user"></i> <?= htmlspecialchars($_SESSION['prenom']) ?></a>
+                    <a href="../../client/profil.php" class="btn-nav"><i class="fas fa-user"></i> <?= htmlspecialchars($_SESSION['prenom'] ?? 'Profil') ?></a>
                     <a href="../../client/panier.php" class="btn-nav btn-primary">
                         <i class="fas fa-shopping-cart"></i> Panier
                         <?php if ($nb_panier > 0): ?>
-                        <span style="background:white;color:#E63946;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;margin-left:4px;">
-                            <?= $nb_panier ?>
-                        </span>
+                            <span id="panier-badge" style="background:white;color:#E63946;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;margin-left:4px;">
+                                <?= $nb_panier ?>
+                            </span>
+                        <?php else: ?>
+                            <span id="panier-badge" style="display:none;"></span>
                         <?php endif; ?>
                     </a>
                 <?php endif; ?>
@@ -321,15 +469,15 @@ $produits = [
                 <a href="../../auth/login.php" class="btn-nav">Connexion</a>
                 <a href="../../auth/register.php" class="btn-nav btn-primary">S'inscrire</a>
             <?php endif; ?>
-            <button id="theme-toggle" onclick="toggleTheme()"
-                style="background:white;border:2px solid #e9ecef;border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:0.3s;flex-shrink:0;">
+
+            <button id="theme-toggle" type="button" onclick="toggleTheme()"
+                    style="background:white;border:2px solid #e9ecef;border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;">
                 🌙
             </button>
         </nav>
     </div>
 </header>
 
-<!-- BREADCRUMB -->
 <div class="breadcrumb">
     <div class="container">
         <div class="breadcrumb-inner">
@@ -342,91 +490,16 @@ $produits = [
     </div>
 </div>
 
-<!-- CONTENU -->
 <section style="padding:50px 0;">
-    <div class="container">
 
-        <div class="page-banner">
-            <h3>Collection Femme</h3>
-            <p>Ensembles confortables et tendance — Tailles XS, S, M, L disponibles</p>
-        </div>
-
-        <div class="vetement-grid">
+        <div class="clothes-grid">
             <?php foreach ($produits as $p): ?>
-            <div class="vetement-card" id="card-<?= $p['id'] ?>">
-
-                <img src="<?= htmlspecialchars($p['image']) ?>"
-                     alt="<?= htmlspecialchars($p['nom']) ?>"
-                     class="vetement-img">
-
-                <div class="vetement-body">
-                    <div class="vetement-header">
-                        <div>
-                            <span class="brand-tag"><?= htmlspecialchars($p['marque']) ?></span>
-                            <div class="vetement-name"><?= htmlspecialchars($p['nom']) ?></div>
-                            <div class="vetement-modele"><?= htmlspecialchars($p['modele']) ?></div>
-                        </div>
-                        <div class="vetement-price"><?= number_format($p['prix'], 3) ?> DT</div>
-                    </div>
-
-                    <!-- Étoiles -->
-                    <div class="vetement-rating">
-                        <?php for ($j = 1; $j <= 5; $j++): ?>
-                            <i class="<?= $j <= round($p['note']) ? 'fas' : 'far' ?> fa-star"></i>
-                        <?php endfor; ?>
-                        <span style="font-size:0.8rem; color:#6c757d; margin-left:4px;">(<?= $p['avis'] ?>)</span>
-                    </div>
-
-                    <!-- Tailles -->
-                    <div class="options-label">Taille</div>
-                    <div class="tailles-row" id="tailles-<?= $p['id'] ?>">
-                        <?php foreach ($p['tailles'] as $t): ?>
-                        <button class="taille-btn"
-                            onclick="selectionnerTaille('<?= $p['id'] ?>', '<?= $t ?>', this)">
-                            <?= $t ?>
-                        </button>
-                        <?php endforeach; ?>
-                    </div>
-                    <div id="taille-selected-<?= $p['id'] ?>" style="font-size:0.8rem;color:#6c757d;margin-top:4px;min-height:18px;"></div>
-
-                    <!-- Couleurs -->
-                    <div class="options-label" style="margin-top:14px;">Couleur</div>
-                    <div class="couleurs-row" id="couleurs-<?= $p['id'] ?>">
-                        <?php foreach ($p['couleurs'] as $idx => $c): ?>
-                        <div class="couleur-wrapper">
-                            <?php if (isset($c['hex2'])): ?>
-                            <button class="couleur-btn bicolor selected-check"
-                                style="--c1:<?= $c['hex'] ?>; --c2:<?= $c['hex2'] ?>;"
-                                onclick="selectionnerCouleur('<?= $p['id'] ?>', '<?= $c['nom'] ?>', this)"
-                                title="<?= $c['nom'] ?>">
-                            </button>
-                            <?php else: ?>
-                            <button class="couleur-btn"
-                                style="background:<?= $c['hex'] ?>; <?= $c['hex'] === '#f9fafb' ? 'border-color:#dee2e6;' : '' ?>"
-                                onclick="selectionnerCouleur('<?= $p['id'] ?>', '<?= $c['nom'] ?>', this)"
-                                title="<?= $c['nom'] ?>">
-                            </button>
-                            <?php endif; ?>
-                            <span class="couleur-tooltip"><?= $c['nom'] ?></span>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
-                    <div id="couleur-selected-<?= $p['id'] ?>" style="font-size:0.8rem;color:#6c757d;margin-top:6px;min-height:18px;"></div>
-
-                    <!-- Bouton ajouter -->
-                    <button class="btn-ajouter"
-                        onclick="ajouterPanier('<?= $p['id'] ?>', '<?= addslashes($p['nom']) ?>')">
-                        <i class="fas fa-shopping-cart"></i> Ajouter au panier
-                    </button>
-                </div>
-            </div>
+                <?= carteVetement($p, $wishlist_ids) ?>
             <?php endforeach; ?>
         </div>
-
     </div>
 </section>
 
-<!-- FOOTER -->
 <footer class="footer">
     <div class="container">
         <div class="footer-grid">
@@ -463,91 +536,57 @@ $produits = [
 </footer>
 
 <script>
-    // Sélections par produit
-    const selections = {};
-
-    function selectionnerTaille(produitId, taille, btn) {
-        // Désélectionner les autres
-        document.querySelectorAll(`#tailles-${produitId} .taille-btn`).forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-
-        if (!selections[produitId]) selections[produitId] = {};
-        selections[produitId].taille = taille;
-        document.getElementById(`taille-selected-${produitId}`).textContent = 'Taille sélectionnée : ' + taille;
-    }
-
-    function selectionnerCouleur(produitId, couleur, btn) {
-        document.querySelectorAll(`#couleurs-${produitId} .couleur-btn`).forEach(b => {
-            b.style.boxShadow = 'none';
-            b.style.transform = 'scale(1)';
-        });
-        btn.style.boxShadow = '0 0 0 3px #E63946';
-        btn.style.transform = 'scale(1.15)';
-
-        if (!selections[produitId]) selections[produitId] = {};
-        selections[produitId].couleur = couleur;
-        document.getElementById(`couleur-selected-${produitId}`).textContent = 'Couleur sélectionnée : ' + couleur;
-    }
-
-    function ajouterPanier(produitId, nom) {
-        const sel = selections[produitId] || {};
-
-        if (!sel.taille) {
-            alert('Veuillez sélectionner une taille !');
-            return;
-        }
-        if (!sel.couleur) {
-            alert('Veuillez sélectionner une couleur !');
-            return;
-        }
-
-        <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'client'): ?>
-        const toast = document.createElement('div');
-        toast.style.cssText = `
-            position:fixed; bottom:30px; right:30px;
-            background:#10b981; color:white;
-            padding:14px 24px; border-radius:50px;
-            font-weight:600; font-family:'DM Sans',sans-serif;
-            font-size:0.95rem; z-index:99999;
-            box-shadow:0 4px 20px rgba(16,185,129,0.4);
-            max-width:360px;
-        `;
-        toast.innerHTML = `✅ ${nom} — Taille ${sel.taille} / ${sel.couleur} ajouté au panier !`;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3500);
-        <?php else: ?>
-        window.location.href = '../../auth/login.php';
-        <?php endif; ?>
-    }
+    window.BASE_URL = '../../';
 
     function lancerRecherche() {
         const q = document.getElementById('search-input').value.trim();
-        if (q) window.location.href = `../../search.php?q=${encodeURIComponent(q)}`;
+        if (q) {
+            window.location.href = `../../search.php?q=${encodeURIComponent(q)}`;
+        }
     }
+
     document.getElementById('search-input')?.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') lancerRecherche();
     });
 
+    document.querySelectorAll('.clothes-card').forEach(card => {
+        card.querySelectorAll('.taille-pill').forEach(btn => {
+            btn.addEventListener('click', function () {
+                card.querySelectorAll('.taille-pill').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        card.querySelectorAll('.couleur-dot').forEach(btn => {
+            btn.addEventListener('click', function () {
+                card.querySelectorAll('.couleur-dot').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+    });
+
     function toggleTheme() {
         const body = document.body;
-        const btn  = document.getElementById('theme-toggle');
+        const btn = document.getElementById('theme-toggle');
         body.classList.toggle('dark');
+
         if (body.classList.contains('dark')) {
-            btn.textContent = '☀️';
+            if (btn) btn.textContent = '☀️';
             localStorage.setItem('theme', 'dark');
         } else {
-            btn.textContent = '🌙';
+            if (btn) btn.textContent = '🌙';
             localStorage.setItem('theme', 'light');
         }
     }
-    (function() {
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark');
-            const btn = document.getElementById('theme-toggle');
-            if (btn) btn.textContent = '☀️';
-        }
-    })();
+
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark');
+        const btn = document.getElementById('theme-toggle');
+        if (btn) btn.textContent = '☀️';
+    }
 </script>
+
+<script src="../../main.js"></script>
 
 </body>
 </html>

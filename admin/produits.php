@@ -1,8 +1,4 @@
 <?php
-// ============================================================
-//   NOVASTORE - admin/produits.php
-//   Gestion des produits (CRUD complet)
-// ============================================================
 
 session_start();
 
@@ -17,14 +13,12 @@ $pdo = getDB();
 $message = '';
 $type_msg = '';
 
-// ---- SUPPRIMER un produit ----
 if (isset($_GET['supprimer']) && is_numeric($_GET['supprimer'])) {
     $pdo->prepare('UPDATE produits SET actif = 0 WHERE id = ?')->execute([$_GET['supprimer']]);
     $message = 'Produit désactivé avec succès.';
     $type_msg = 'success';
 }
 
-// ---- AJOUTER / MODIFIER un produit ----
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id          = $_POST['id'] ?? null;
     $categorie   = $_POST['categorie_id'];
@@ -38,7 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $image       = trim($_POST['image']);
 
     if ($id) {
-        // Modification
         $stmt = $pdo->prepare('
             UPDATE produits SET categorie_id=?, marque=?, nom=?, description=?,
             modele=?, prix=?, stock=?, badge=?, image=?
@@ -47,7 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$categorie, $marque, $nom, $description, $modele, $prix, $stock, $badge, $image, $id]);
         $message = 'Produit modifié avec succès.';
     } else {
-        // Ajout
         $stmt = $pdo->prepare('
             INSERT INTO produits (categorie_id, marque, nom, description, modele, prix, stock, badge, image)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -58,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $type_msg = 'success';
 }
 
-// ---- Récupérer les produits ----
 $search = trim($_GET['search'] ?? '');
 $cat_filter = $_GET['cat'] ?? '';
 
@@ -80,10 +71,8 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $produits = $stmt->fetchAll();
 
-// Catégories pour le filtre et le formulaire
 $categories = $pdo->query('SELECT * FROM categories WHERE active = 1 ORDER BY ordre')->fetchAll();
 
-// Produit à éditer
 $produit_edit = null;
 if (isset($_GET['editer']) && is_numeric($_GET['editer'])) {
     $stmt = $pdo->prepare('SELECT * FROM produits WHERE id = ?');
@@ -103,7 +92,6 @@ if (isset($_GET['editer']) && is_numeric($_GET['editer'])) {
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'DM Sans', sans-serif; background: #f1f5f9; display: flex; min-height: 100vh; }
-        /* Sidebar identique au dashboard */
         .sidebar { width:260px; background:#1D3557; color:white; display:flex; flex-direction:column; position:fixed; top:0; left:0; height:100vh; z-index:100; }
         .sidebar-logo { padding:28px 24px; font-family:'Playfair Display',serif; font-size:1.5rem; border-bottom:1px solid rgba(255,255,255,0.1); }
         .sidebar-logo strong { color:#E63946; }
@@ -120,7 +108,6 @@ if (isset($_GET['editer']) && is_numeric($_GET['editer'])) {
         .topbar h1 { font-size:1.3rem; color:#1D3557; }
         .page { padding:32px; }
 
-        /* Barre de filtres */
         .filters-bar {
             background:white; border-radius:12px; padding:20px 24px;
             display:flex; gap:16px; align-items:center; margin-bottom:24px;
@@ -140,7 +127,6 @@ if (isset($_GET['editer']) && is_numeric($_GET['editer'])) {
         }
         .btn-add-produit:hover { background:#c1121f; }
 
-        /* Table */
         .card { background:white; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); overflow:hidden; }
         .data-table { width:100%; border-collapse:collapse; }
         .data-table th { background:#f8f9fa; padding:12px 16px; text-align:left; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px; color:#6c757d; font-weight:600; }
@@ -155,7 +141,6 @@ if (isset($_GET['editer']) && is_numeric($_GET['editer'])) {
         .btn-delete { background:#fee2e2; color:#ef4444; }
         .btn-delete:hover { background:#fecaca; }
 
-        /* Modal formulaire */
         .modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:999; align-items:center; justify-content:center; padding:20px; }
         .modal-bg.open { display:flex; }
         .modal-form { background:white; border-radius:16px; padding:40px; width:100%; max-width:600px; max-height:90vh; overflow-y:auto; }
@@ -207,7 +192,6 @@ if (isset($_GET['editer']) && is_numeric($_GET['editer'])) {
         </div>
         <?php endif; ?>
 
-        <!-- Filtres -->
         <form method="GET" class="filters-bar">
             <input type="text" name="search" placeholder="🔍 Rechercher un produit..." value="<?= htmlspecialchars($search) ?>">
             <select name="cat">
@@ -221,7 +205,6 @@ if (isset($_GET['editer']) && is_numeric($_GET['editer'])) {
             <button type="submit" class="btn-add-produit">Filtrer</button>
         </form>
 
-        <!-- Table produits -->
         <div class="card">
             <table class="data-table">
                 <thead>
@@ -277,7 +260,6 @@ if (isset($_GET['editer']) && is_numeric($_GET['editer'])) {
     </div>
 </div>
 
-<!-- ===== MODAL FORMULAIRE ===== -->
 <div class="modal-bg" id="modalProduit">
     <div class="modal-form">
         <h2 id="modal-title"><i class="fas fa-plus" style="color:#E63946;"></i> Ajouter un produit</h2>

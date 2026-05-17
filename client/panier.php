@@ -1,8 +1,5 @@
 <?php
-// ============================================================
-//   NOVASTORE - client/panier.php
-//   Panier du client connecté
-// ============================================================
+
 
 session_start();
 
@@ -17,7 +14,6 @@ $pdo = getDB();
 $message  = '';
 $type_msg = '';
 
-// ---- Modifier la quantité ----
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     if ($_POST['action'] === 'update_qty') {
@@ -28,7 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $pdo->prepare('DELETE FROM panier WHERE utilisateur_id=? AND produit_id=?')
                 ->execute([$_SESSION['user_id'], $produit_id]);
         } else {
-            // Vérifier le stock disponible
             $stmt = $pdo->prepare('SELECT stock FROM produits WHERE id=?');
             $stmt->execute([$produit_id]);
             $produit = $stmt->fetch();
@@ -55,13 +50,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $type_msg = 'success';
     }
 
-    // ---- Passer la commande ----
     if ($_POST['action'] === 'commander') {
         $adresse_id     = intval($_POST['adresse_id']) ?: null;
         $mode_paiement  = $_POST['mode_paiement'] ?? 'especes';
         $notes          = trim($_POST['notes'] ?? '');
 
-        // Récupérer les articles du panier
         $stmt = $pdo->prepare('
             SELECT p.id, p.nom, p.prix, p.stock, pan.quantite
             FROM panier pan
@@ -75,7 +68,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $message  = 'Votre panier est vide.';
             $type_msg = 'error';
         } else {
-            // Vérifier les stocks
             $erreur_stock = false;
             foreach ($articles as $art) {
                 if ($art['quantite'] > $art['stock']) {
@@ -87,13 +79,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             }
 
             if (!$erreur_stock) {
-                // Calculer le total
                 $total = 0;
                 foreach ($articles as $art) {
                     $total += $art['prix'] * $art['quantite'];
                 }
 
-                // Créer la commande
                 $stmt = $pdo->prepare('
                     INSERT INTO commandes (utilisateur_id, adresse_id, total, mode_paiement, notes)
                     VALUES (?, ?, ?, ?, ?)
@@ -101,7 +91,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $stmt->execute([$_SESSION['user_id'], $adresse_id, $total, $mode_paiement, $notes]);
                 $commande_id = $pdo->lastInsertId();
 
-                // Insérer les lignes de commande + mettre à jour les stocks
                 foreach ($articles as $art) {
                     $sous_total = $art['prix'] * $art['quantite'];
                     $pdo->prepare('
@@ -113,7 +102,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         ->execute([$art['quantite'], $art['id']]);
                 }
 
-                // Vider le panier
                 $pdo->prepare('DELETE FROM panier WHERE utilisateur_id=?')
                     ->execute([$_SESSION['user_id']]);
 
@@ -124,7 +112,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     }
 }
 
-// ---- Récupérer le panier ----
 $stmt = $pdo->prepare('
     SELECT pan.quantite, p.id, p.nom, p.marque, p.prix, p.image, p.stock, p.modele
     FROM panier pan
@@ -135,13 +122,11 @@ $stmt = $pdo->prepare('
 $stmt->execute([$_SESSION['user_id']]);
 $articles = $stmt->fetchAll();
 
-// Total du panier
 $total = 0;
 foreach ($articles as $art) {
     $total += $art['prix'] * $art['quantite'];
 }
 
-// Adresses de livraison
 $stmt = $pdo->prepare('SELECT * FROM adresses WHERE utilisateur_id=? ORDER BY par_defaut DESC');
 $stmt->execute([$_SESSION['user_id']]);
 $adresses = $stmt->fetchAll();
@@ -160,7 +145,6 @@ $adresses = $stmt->fetchAll();
         .page { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
         .page-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #1D3557; margin-bottom: 28px; }
 
-        /* Layout 2 colonnes */
         .panier-layout {
             display: grid;
             grid-template-columns: 1fr 360px;
@@ -168,7 +152,6 @@ $adresses = $stmt->fetchAll();
             align-items: start;
         }
 
-        /* Card générique */
         .card {
             background: white; border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06); overflow: hidden;
@@ -179,7 +162,6 @@ $adresses = $stmt->fetchAll();
         }
         .card-header h3 { font-size: 1rem; color: #1D3557; font-weight: 700; }
 
-        /* Articles */
         .article-row {
             display: flex; align-items: center; gap: 16px;
             padding: 20px 24px; border-bottom: 1px solid #f1f5f9;
@@ -201,7 +183,6 @@ $adresses = $stmt->fetchAll();
         .article-price { font-size: 1.1rem; font-weight: 700; color: #007bff; white-space: nowrap; }
         .article-subtotal { font-size: 0.8rem; color: #6c757d; }
 
-        /* Quantité */
         .qty-control {
             display: flex; align-items: center; gap: 8px;
         }
@@ -218,7 +199,6 @@ $adresses = $stmt->fetchAll();
             font-weight: 700; font-size: 0.95rem;
         }
 
-        /* Bouton supprimer */
         .btn-remove {
             background: #fee2e2; color: #ef4444; border: none;
             padding: 6px 10px; border-radius: 6px; cursor: pointer;
@@ -226,14 +206,12 @@ $adresses = $stmt->fetchAll();
         }
         .btn-remove:hover { background: #fecaca; }
 
-        /* Vider panier */
         .btn-vider {
             background: none; border: none; color: #ef4444;
             font-size: 0.85rem; cursor: pointer; font-family: 'DM Sans', sans-serif;
             font-weight: 600; display: flex; align-items: center; gap: 4px;
         }
 
-        /* Récap commande */
         .recap { padding: 24px; }
         .recap-line {
             display: flex; justify-content: space-between;
@@ -245,7 +223,6 @@ $adresses = $stmt->fetchAll();
         }
         .recap-line.livraison { color: #10b981; font-weight: 600; }
 
-        /* Formulaire commande */
         .form-group { margin-bottom: 14px; }
         .form-group label { display: block; font-weight: 600; font-size: 0.85rem; color: #374151; margin-bottom: 6px; }
         .form-group select, .form-group textarea {
@@ -264,7 +241,6 @@ $adresses = $stmt->fetchAll();
         }
         .btn-commander:hover { background: #c1121f; transform: translateY(-1px); }
 
-        /* Panier vide */
         .panier-vide {
             text-align: center; padding: 60px 20px; color: #6c757d;
         }
@@ -286,7 +262,6 @@ $adresses = $stmt->fetchAll();
 </head>
 <body>
 
-<!-- NAVBAR -->
 <header class="navbar">
     <div class="nav-container">
         <a href="../index.php" class="logo">Nova<strong>Store</strong></a>
@@ -323,7 +298,6 @@ $adresses = $stmt->fetchAll();
     </h1>
 
     <?php if (empty($articles)): ?>
-    <!-- Panier vide -->
     <div class="card">
         <div class="panier-vide">
             <i class="fas fa-shopping-cart"></i>
@@ -338,7 +312,6 @@ $adresses = $stmt->fetchAll();
     <?php else: ?>
     <div class="panier-layout">
 
-        <!-- ===== ARTICLES ===== -->
         <div>
             <div class="card">
                 <div class="card-header">
@@ -353,21 +326,18 @@ $adresses = $stmt->fetchAll();
 
                 <?php foreach ($articles as $art): ?>
                 <div class="article-row">
-                    <!-- Image -->
                     <?php if ($art['image']): ?>
                     <img src="../<?= htmlspecialchars($art['image']) ?>" alt="" class="article-img">
                     <?php else: ?>
                     <div class="article-img-placeholder"><i class="fas fa-image fa-2x"></i></div>
                     <?php endif; ?>
 
-                    <!-- Infos -->
                     <div class="article-info">
                         <div class="article-brand"><?= htmlspecialchars($art['marque'] ?? '') ?></div>
                         <div class="article-name"><?= htmlspecialchars($art['nom']) ?></div>
                         <div class="article-model"><?= htmlspecialchars($art['modele'] ?? '') ?></div>
                     </div>
 
-                    <!-- Prix unitaire -->
                     <div style="text-align:right; min-width:90px;">
                         <div class="article-price"><?= number_format($art['prix'], 3) ?> DT</div>
                         <div class="article-subtotal">
@@ -375,7 +345,6 @@ $adresses = $stmt->fetchAll();
                         </div>
                     </div>
 
-                    <!-- Quantité -->
                     <form method="POST" style="display:flex; align-items:center; gap:6px;">
                         <input type="hidden" name="action" value="update_qty">
                         <input type="hidden" name="produit_id" value="<?= $art['id'] ?>">
@@ -389,7 +358,6 @@ $adresses = $stmt->fetchAll();
                         </div>
                     </form>
 
-                    <!-- Supprimer -->
                     <form method="POST">
                         <input type="hidden" name="action" value="remove">
                         <input type="hidden" name="produit_id" value="<?= $art['id'] ?>">
@@ -401,7 +369,6 @@ $adresses = $stmt->fetchAll();
                 <?php endforeach; ?>
             </div>
 
-            <!-- Continuer les achats -->
             <div style="margin-top:16px;">
                 <a href="../index.php" style="color:#6c757d; text-decoration:none; font-size:0.9rem;">
                     <i class="fas fa-arrow-left"></i> Continuer mes achats
@@ -409,14 +376,12 @@ $adresses = $stmt->fetchAll();
             </div>
         </div>
 
-        <!-- ===== RÉCAP + COMMANDE ===== -->
         <div>
             <div class="card">
                 <div class="card-header">
                     <h3><i class="fas fa-receipt" style="color:#E63946; margin-right:8px;"></i>Récapitulatif</h3>
                 </div>
                 <div class="recap">
-                    <!-- Lignes récap -->
                     <?php foreach ($articles as $art): ?>
                     <div class="recap-line">
                         <span><?= htmlspecialchars($art['nom']) ?> x<?= $art['quantite'] ?></span>
@@ -443,7 +408,6 @@ $adresses = $stmt->fetchAll();
 
                     <hr style="margin:20px 0; border-color:#f1f5f9;">
 
-                    <!-- Formulaire commande -->
                     <form method="POST">
                         <input type="hidden" name="action" value="commander">
 
@@ -467,9 +431,9 @@ $adresses = $stmt->fetchAll();
                         <div class="form-group">
                             <label><i class="fas fa-credit-card"></i> Mode de paiement</label>
                             <select name="mode_paiement">
-                                <option value="especes">💵 Paiement à la livraison</option>
-                                <option value="carte">💳 Carte bancaire</option>
-                                <option value="virement">🏦 Virement bancaire</option>
+                                <option value="especes"> Paiement à la livraison</option>
+                                <option value="carte"> Carte bancaire</option>
+                                <option value="virement"> Virement bancaire</option>
                             </select>
                         </div>
 

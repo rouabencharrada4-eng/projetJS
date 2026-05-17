@@ -1,9 +1,4 @@
 <?php
-// ============================================================
-//   NOVASTORE - admin/utilisateurs.php
-//   Gestion des clients
-// ============================================================
-
 session_start();
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
@@ -16,7 +11,6 @@ $pdo = getDB();
 
 $message = '';
 
-// ---- Activer / Désactiver un compte ----
 if (isset($_GET['toggle']) && is_numeric($_GET['toggle'])) {
     $stmt = $pdo->prepare('SELECT actif FROM utilisateurs WHERE id = ? AND role = "client"');
     $stmt->execute([$_GET['toggle']]);
@@ -28,7 +22,6 @@ if (isset($_GET['toggle']) && is_numeric($_GET['toggle'])) {
     }
 }
 
-// ---- Recherche ----
 $search = trim($_GET['search'] ?? '');
 $sql = '
     SELECT u.*,

@@ -103,7 +103,6 @@ function carteProuit($p, $wishlist_ids) {
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* ===== MEGA MENU ===== */
         .dropdown-content { overflow: visible !important; }
 
         .mega-menu-item { position: relative; }
@@ -126,7 +125,6 @@ function carteProuit($p, $wishlist_ids) {
             padding-left: 24px;
         }
 
-        /* Niveau 2 */
         .submenu-lvl2 {
             display: none;
             position: absolute;
@@ -143,7 +141,6 @@ function carteProuit($p, $wishlist_ids) {
         }
         .mega-menu-item:hover .submenu-lvl2 { display: block; }
 
-        /* Lien direct niveau 2 */
         .submenu-lvl2-link {
             display: flex;
             align-items: center;
@@ -166,14 +163,12 @@ function carteProuit($p, $wishlist_ids) {
 </head>
 <body>
 
-<!-- TOP BAR -->
 <div class="top-bar">
     <div class="container-top-bar">
         <p>Livraison gratuite depuis 200 DT !</p>
     </div>
 </div>
 
-<!-- NAVBAR -->
 <header class="navbar">
     <div class="nav-container">
         <div class="logo">
@@ -181,12 +176,10 @@ function carteProuit($p, $wishlist_ids) {
             Nova<strong>Store</strong>
         </div>
 
-        <!-- Rayons -->
         <div class="dropdown">
             <button class="btn-nav">Rayons <i class="fa-solid fa-chevron-down" style="font-size:0.8rem; margin-left:5px;"></i></button>
             <div class="dropdown-content">
 
-                <!-- ===== ALIMENTAIRE ===== -->
                 <div class="mega-menu-item">
                     <a href="catalogue/alimentaire.php" class="has-submenu">
                         Alimentaire
@@ -202,7 +195,6 @@ function carteProuit($p, $wishlist_ids) {
                     </div>
                 </div>
 
-                <!-- ===== ÉLECTROMÉNAGER ===== -->
                 <div class="mega-menu-item">
                     <a href="catalogue/electromenager.php" class="has-submenu">
                         Électroménager
@@ -210,7 +202,6 @@ function carteProuit($p, $wishlist_ids) {
                     </a>
                 </div>
 
-                <!-- ===== COSMÉTIQUES ===== -->
                 <div class="mega-menu-item">
                     <a href="catalogue/cosmetiques.php" class="has-submenu">
                         Cosmétiques
@@ -223,7 +214,6 @@ function carteProuit($p, $wishlist_ids) {
                     </div>
                 </div>
 
-                <!-- ===== VÊTEMENTS ===== -->
                 <div class="mega-menu-item">
                     <a href="catalogue/vetements.php" class="has-submenu">
                         Vêtements
@@ -235,7 +225,6 @@ function carteProuit($p, $wishlist_ids) {
                     </div>
                 </div>
 
-                <!-- ===== JEUX ===== -->
                 <div class="mega-menu-item">
                     <a href="catalogue/jeux.php" class="has-submenu">
                         Jeux
@@ -243,7 +232,6 @@ function carteProuit($p, $wishlist_ids) {
                     </a>
                 </div>
 
-                <!-- ===== USTENSILES ===== -->
                 <div class="mega-menu-item">
                     <a href="catalogue/ustensiles.php" class="has-submenu">
                         Ustensiles
@@ -251,7 +239,6 @@ function carteProuit($p, $wishlist_ids) {
                     </a>
                 </div>
 
-                <!-- ===== NETTOYAGE ===== -->
                 <div class="mega-menu-item">
                     <a href="catalogue/nettoyage.php" class="has-submenu">
                         Nettoyage
@@ -262,14 +249,12 @@ function carteProuit($p, $wishlist_ids) {
             </div>
         </div>
 
-        <!-- Recherche -->
         <div class="nav-search">
             <input type="text" placeholder="Rechercher un produit..." id="search-input"
                 value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
             <button onclick="lancerRecherche()">Rechercher</button>
         </div>
 
-        <!-- Actions navbar -->
         <nav class="nav-actions">
             <?php if (isset($_SESSION['user_id'])): ?>
                 <?php if ($_SESSION['role'] === 'admin'): ?>
@@ -312,19 +297,16 @@ function carteProuit($p, $wishlist_ids) {
     </div>
 </header>
 
-<!-- HERO SLIDER -->
 <main class="hero-slider">
     <div class="hero-content"></div>
 </main>
 
-<!-- CATALOGUE BANNER -->
 <section class="catalogue-banner">
     <div class="container">
         <a href="#produits" class="btn-catalogue">Découvrir notre catalogue complet</a>
     </div>
 </section>
 
-<!-- SECTION : ÉLECTROMÉNAGER -->
 <?php
 $section_electromenager = array_merge($produits_electromenager, $produits_ustensiles);
 if (!empty($section_electromenager)): ?>
@@ -340,7 +322,6 @@ if (!empty($section_electromenager)): ?>
 </section>
 <?php endif; ?>
 
-<!-- SECTION : ALIMENTAIRE -->
 <?php if (!empty($produits_alimentaire)): ?>
 <section class="product-section bg-light">
     <div class="container">
@@ -354,7 +335,6 @@ if (!empty($section_electromenager)): ?>
 </section>
 <?php endif; ?>
 
-<!-- SECTION : NETTOYAGE -->
 <?php if (!empty($produits_nettoyage)): ?>
 <section class="product-section">
     <div class="container">
@@ -368,7 +348,6 @@ if (!empty($section_electromenager)): ?>
 </section>
 <?php endif; ?>
 
-<!-- SECTION : RÉSULTATS RECHERCHE / FILTRE CATÉGORIE -->
 <?php
 $recherche  = trim($_GET['q']   ?? '');
 $cat_filtre = trim($_GET['cat'] ?? '');
@@ -416,7 +395,6 @@ if ($recherche || $cat_filtre):
 </section>
 <?php endif; ?>
 
-<!-- FOOTER -->
 <footer class="footer">
     <div class="container">
         <div class="footer-grid">
@@ -452,7 +430,6 @@ if ($recherche || $cat_filtre):
     </div>
 </footer>
 
-<!-- SCRIPTS -->
 <script>
     const images = ['images/hero-1.png', 'images/hero-2.png', 'images/hero-3.png'];
     let currentIndex = 0;

@@ -1,8 +1,4 @@
 <?php
-// ============================================================
-//   NOVASTORE - client/commandes.php
-//   Historique des commandes du client
-// ============================================================
 
 session_start();
 
@@ -14,18 +10,15 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'client') {
 require_once '../config/db.php';
 $pdo = getDB();
 
-// ---- Annuler une commande ----
 $message  = '';
 $type_msg = '';
 
 if (isset($_GET['annuler']) && is_numeric($_GET['annuler'])) {
-    // Vérifier que la commande appartient au client et est encore annulable
     $stmt = $pdo->prepare('SELECT * FROM commandes WHERE id=? AND utilisateur_id=?');
     $stmt->execute([$_GET['annuler'], $_SESSION['user_id']]);
     $cmd = $stmt->fetch();
 
     if ($cmd && in_array($cmd['statut'], ['en_attente', 'confirmee'])) {
-        // Remettre les stocks
         $lignes = $pdo->prepare('SELECT * FROM lignes_commande WHERE commande_id=?');
         $lignes->execute([$cmd['id']]);
         foreach ($lignes->fetchAll() as $ligne) {
@@ -42,7 +35,6 @@ if (isset($_GET['annuler']) && is_numeric($_GET['annuler'])) {
     }
 }
 
-// ---- Filtre statut ----
 $filtre = $_GET['statut'] ?? '';
 
 $sql = '
@@ -66,7 +58,6 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $commandes = $stmt->fetchAll();
 
-// Détail d'une commande
 $commande_detail = null;
 $lignes_detail   = [];
 
@@ -96,7 +87,6 @@ $statut_labels = [
     'annulee'        => ['label' => 'Annulée',          'color' => '#ef4444', 'icon' => 'times-circle'],
 ];
 
-// Étapes du suivi
 $etapes = ['en_attente', 'confirmee', 'en_preparation', 'expediee', 'livree'];
 ?>
 <!DOCTYPE html>
@@ -113,7 +103,6 @@ $etapes = ['en_attente', 'confirmee', 'en_preparation', 'expediee', 'livree'];
         .page { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
         .page-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #1D3557; margin-bottom: 28px; }
 
-        /* Filtres */
         .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
         .filter-btn {
             padding: 8px 16px; border-radius: 20px; border: 2px solid #e9ecef;
@@ -123,7 +112,6 @@ $etapes = ['en_attente', 'confirmee', 'en_preparation', 'expediee', 'livree'];
         }
         .filter-btn:hover, .filter-btn.active { border-color: #E63946; color: #E63946; background: #fce7f3; }
 
-        /* Card commande */
         .commande-card {
             background: white; border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
@@ -167,7 +155,6 @@ $etapes = ['en_attente', 'confirmee', 'en_preparation', 'expediee', 'livree'];
         }
         .btn-annuler:hover { background: #ef4444; color: white; }
 
-        /* Suivi commande */
         .suivi {
             padding: 20px 24px;
             border-top: 1px solid #f1f5f9;
@@ -196,7 +183,6 @@ $etapes = ['en_attente', 'confirmee', 'en_preparation', 'expediee', 'livree'];
         .step-label.done { color: #10b981; }
         .step-label.current { color: #E63946; }
 
-        /* Modal détail */
         .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; align-items: center; justify-content: center; padding: 20px; }
         .modal-bg.open { display: flex; }
         .modal-box {
@@ -216,7 +202,6 @@ $etapes = ['en_attente', 'confirmee', 'en_preparation', 'expediee', 'livree'];
         }
         .modal-body { padding: 24px 28px; }
 
-        /* Lignes commande dans modal */
         .ligne-row {
             display: flex; align-items: center; gap: 14px;
             padding: 14px 0; border-bottom: 1px solid #f1f5f9;
@@ -229,7 +214,6 @@ $etapes = ['en_attente', 'confirmee', 'en_preparation', 'expediee', 'livree'];
         .ligne-prix { font-weight: 700; color: #007bff; white-space: nowrap; }
         .ligne-qty { font-size: 0.8rem; color: #6c757d; }
 
-        /* Vide */
         .vide { text-align: center; padding: 60px 20px; color: #6c757d; }
         .vide i { font-size: 4rem; color: #dee2e6; margin-bottom: 16px; display: block; }
 
@@ -242,7 +226,6 @@ $etapes = ['en_attente', 'confirmee', 'en_preparation', 'expediee', 'livree'];
 </head>
 <body>
 
-<!-- NAVBAR -->
 <header class="navbar">
     <div class="nav-container">
         <a href="../index.php" class="logo">Nova<strong>Store</strong></a>
@@ -269,7 +252,6 @@ $etapes = ['en_attente', 'confirmee', 'en_preparation', 'expediee', 'livree'];
         <i class="fas fa-box" style="color:#E63946;"></i> Mes commandes
     </h1>
 
-    <!-- Filtres -->
     <div class="filters">
         <a href="commandes.php" class="filter-btn <?= !$filtre ? 'active' : '' ?>">Toutes (<?= count($commandes) ?>)</a>
         <?php foreach ($statut_labels as $key => $s): ?>
@@ -297,7 +279,6 @@ $etapes = ['en_attente', 'confirmee', 'en_preparation', 'expediee', 'livree'];
     ?>
     <div class="commande-card" style="border-left-color: <?= $s['color'] ?>;">
 
-        <!-- Header -->
         <div class="commande-header">
             <div>
                 <div class="commande-id">
@@ -317,7 +298,6 @@ $etapes = ['en_attente', 'confirmee', 'en_preparation', 'expediee', 'livree'];
             <div class="commande-total"><?= number_format($cmd['total'], 3) ?> DT</div>
         </div>
 
-        <!-- Suivi (sauf annulée) -->
         <?php if ($cmd['statut'] !== 'annulee'): ?>
         <div class="suivi">
             <div class="suivi-steps">
@@ -339,7 +319,6 @@ $etapes = ['en_attente', 'confirmee', 'en_preparation', 'expediee', 'livree'];
         </div>
         <?php endif; ?>
 
-        <!-- Footer -->
         <div class="commande-footer">
             <div class="commande-info">
                 <i class="fas fa-box"></i> <?= $cmd['nb_articles'] ?> article<?= $cmd['nb_articles'] > 1 ? 's' : '' ?>
@@ -367,7 +346,6 @@ $etapes = ['en_attente', 'confirmee', 'en_preparation', 'expediee', 'livree'];
     <?php endif; ?>
 </div>
 
-<!-- ===== MODAL DÉTAIL ===== -->
 <div class="modal-bg" id="modalDetail">
     <div class="modal-box">
         <div class="modal-header">
@@ -384,13 +362,11 @@ $etapes = ['en_attente', 'confirmee', 'en_preparation', 'expediee', 'livree'];
 </div>
 
 <script>
-// Données des commandes pour le modal
 const commandes = <?= json_encode(array_column($commandes, null, 'id')) ?>;
 
 function ouvrirDetail(id) {
     document.getElementById('modalDetail').classList.add('open');
 
-    // Charger le détail via fetch
     fetch('detail_commande.php?id=' + id)
         .then(r => r.text())
         .then(html => {

@@ -1,8 +1,4 @@
 <?php
-// ============================================================
-//   NOVASTORE - client/profil.php
-//   Profil du client connecté
-// ============================================================
 
 session_start();
 
@@ -17,7 +13,6 @@ $pdo = getDB();
 $message = '';
 $type_msg = '';
 
-// ---- Modifier les infos personnelles ----
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     if ($_POST['action'] === 'update_profil') {
@@ -84,7 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     }
 }
 
-// ---- Supprimer une adresse ----
 if (isset($_GET['supprimer_adresse']) && is_numeric($_GET['supprimer_adresse'])) {
     $pdo->prepare('DELETE FROM adresses WHERE id=? AND utilisateur_id=?')
         ->execute([$_GET['supprimer_adresse'], $_SESSION['user_id']]);
@@ -92,7 +86,6 @@ if (isset($_GET['supprimer_adresse']) && is_numeric($_GET['supprimer_adresse']))
     $type_msg = 'success';
 }
 
-// ---- Récupérer les données ----
 $stmt = $pdo->prepare('SELECT * FROM utilisateurs WHERE id=?');
 $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch();
@@ -101,7 +94,6 @@ $adresses = $pdo->prepare('SELECT * FROM adresses WHERE utilisateur_id=? ORDER B
 $adresses->execute([$_SESSION['user_id']]);
 $adresses = $adresses->fetchAll();
 
-// Stats rapides
 $nb_commandes = $pdo->prepare('SELECT COUNT(*) FROM commandes WHERE utilisateur_id=?');
 $nb_commandes->execute([$_SESSION['user_id']]);
 $nb_commandes = $nb_commandes->fetchColumn();
@@ -127,7 +119,6 @@ $nb_wishlist = $nb_wishlist->fetchColumn();
         body { background: #f1f5f9; }
         .client-page { max-width: 900px; margin: 40px auto; padding: 0 20px; }
 
-        /* Header profil */
         .profil-header {
             background: linear-gradient(135deg, #1D3557, #2d4a6b);
             border-radius: 16px;
@@ -149,7 +140,6 @@ $nb_wishlist = $nb_wishlist->fetchColumn();
         .profil-header h2 { font-size: 1.5rem; margin-bottom: 4px; }
         .profil-header p  { color: rgba(255,255,255,0.7); font-size: 0.9rem; }
 
-        /* Stats */
         .stats-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -166,7 +156,6 @@ $nb_wishlist = $nb_wishlist->fetchColumn();
         .stat-mini .val { font-size: 1.6rem; font-weight: 700; color: #1D3557; }
         .stat-mini .lbl { font-size: 0.85rem; color: #6c757d; margin-top: 4px; }
 
-        /* Tabs */
         .tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
         .tab-btn {
             padding: 10px 20px; border-radius: 8px; border: 2px solid #e9ecef;
@@ -175,7 +164,6 @@ $nb_wishlist = $nb_wishlist->fetchColumn();
         }
         .tab-btn.active, .tab-btn:hover { border-color: #E63946; color: #E63946; background: #fce7f3; }
 
-        /* Cards */
         .card {
             background: white; border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
@@ -184,7 +172,6 @@ $nb_wishlist = $nb_wishlist->fetchColumn();
         .card h3 { font-size: 1.1rem; color: #1D3557; margin-bottom: 20px;
             display: flex; align-items: center; gap: 8px; }
 
-        /* Formulaires */
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; font-weight: 600; font-size: 0.85rem; color: #374151; margin-bottom: 6px; }
         .form-group input, .form-group select {
@@ -201,7 +188,6 @@ $nb_wishlist = $nb_wishlist->fetchColumn();
         }
         .btn-save:hover { background: #c1121f; }
 
-        /* Adresses */
         .adresse-card {
             border: 2px solid #e9ecef; border-radius: 10px; padding: 16px;
             margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start;
@@ -228,13 +214,15 @@ $nb_wishlist = $nb_wishlist->fetchColumn();
 </head>
 <body>
 
-<!-- NAVBAR -->
 <header class="navbar">
     <div class="nav-container">
         <a href="../index.php" class="logo">Nova<strong>Store</strong></a>
         <nav class="nav-actions">
             <a href="commandes.php" class="btn-nav"><i class="fas fa-box"></i> Mes commandes</a>
             <a href="panier.php" class="btn-nav"><i class="fas fa-shopping-cart"></i> Panier</a>
+            <a href="wishlist.php" class="btn-nav">
+    <i class="fas fa-heart" style="color:#E63946;"></i> Mes favoris
+    </a>
             <a href="../auth/logout.php" class="btn-nav" style="color:#E63946;">
                 <i class="fas fa-sign-out-alt"></i> Déconnexion
             </a>
@@ -251,7 +239,6 @@ $nb_wishlist = $nb_wishlist->fetchColumn();
     </div>
     <?php endif; ?>
 
-    <!-- Header profil -->
     <div class="profil-header">
         <div class="profil-avatar">
             <?= strtoupper(substr($user['prenom'], 0, 1)) ?>
@@ -263,7 +250,6 @@ $nb_wishlist = $nb_wishlist->fetchColumn();
         </div>
     </div>
 
-    <!-- Stats -->
     <div class="stats-row">
         <div class="stat-mini">
             <div class="val"><?= $nb_commandes ?></div>
@@ -273,20 +259,18 @@ $nb_wishlist = $nb_wishlist->fetchColumn();
             <div class="val"><?= number_format($total_depense, 3) ?></div>
             <div class="lbl">DT dépensés</div>
         </div>
-        <div class="stat-mini">
-            <div class="val"><?= $nb_wishlist ?></div>
-            <div class="lbl">Favoris</div>
-        </div>
+<a href="wishlist.php" class="stat-mini" style="text-decoration:none; color:inherit; cursor:pointer;">
+    <div class="val" style="color:#E63946;"><?= $nb_wishlist ?></div>
+    <div class="lbl">Favoris ❤️</div>
+</a>
     </div>
 
-    <!-- Tabs -->
     <div class="tabs">
         <button class="tab-btn active" onclick="showTab('infos')"><i class="fas fa-user"></i> Mes informations</button>
         <button class="tab-btn" onclick="showTab('mdp')"><i class="fas fa-lock"></i> Mot de passe</button>
         <button class="tab-btn" onclick="showTab('adresses')"><i class="fas fa-map-marker-alt"></i> Mes adresses</button>
     </div>
 
-    <!-- Tab : Infos personnelles -->
     <div class="tab-content active" id="tab-infos">
         <div class="card">
             <h3><i class="fas fa-user" style="color:#E63946;"></i> Informations personnelles</h3>
@@ -315,7 +299,6 @@ $nb_wishlist = $nb_wishlist->fetchColumn();
         </div>
     </div>
 
-    <!-- Tab : Mot de passe -->
     <div class="tab-content" id="tab-mdp">
         <div class="card">
             <h3><i class="fas fa-lock" style="color:#E63946;"></i> Changer le mot de passe</h3>
@@ -338,7 +321,6 @@ $nb_wishlist = $nb_wishlist->fetchColumn();
         </div>
     </div>
 
-    <!-- Tab : Adresses -->
     <div class="tab-content" id="tab-adresses">
         <div class="card">
             <h3><i class="fas fa-map-marker-alt" style="color:#E63946;"></i> Mes adresses de livraison</h3>

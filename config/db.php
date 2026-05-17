@@ -1,13 +1,9 @@
 <?php
-// ============================================================
-//   NOVASTORE - config/db.php
-//   Connexion à la base de données MySQL via PDO
-// ============================================================
 
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'novastore');
-define('DB_USER', 'root');          // ← change avec ton utilisateur MySQL
-define('DB_PASS', '');              // ← change avec ton mot de passe MySQL
+define('DB_USER', 'root');          
+define('DB_PASS', '');              
 define('DB_CHARSET', 'utf8mb4');
 
 function getDB(): PDO {
@@ -19,15 +15,14 @@ function getDB(): PDO {
              . ';charset='   . DB_CHARSET;
 
         $options = [
-            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,   // lance des exceptions
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,         // retourne des tableaux associatifs
-            PDO::ATTR_EMULATE_PREPARES   => false,                     // requêtes préparées réelles
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,   
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,         
+            PDO::ATTR_EMULATE_PREPARES   => false,                     
         ];
 
         try {
             $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
         } catch (PDOException $e) {
-            // En production, ne jamais afficher le message brut
             error_log('Erreur DB : ' . $e->getMessage());
             http_response_code(500);
             die(json_encode(['erreur' => 'Connexion base de données impossible.']));

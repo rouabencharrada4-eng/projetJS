@@ -1,8 +1,4 @@
 <?php
-// ============================================================
-//   NOVASTORE - search.php
-//   Recherche globale de produits
-// ============================================================
 
 session_start();
 require_once 'config/db.php';
@@ -19,7 +15,6 @@ if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'client') {
 
 $resultats = [];
 if ($q) {
-    // Recherche dans le nom, la marque ou le modèle
     $stmt = $pdo->prepare('
         SELECT p.*, c.nom AS categorie_nom
         FROM produits p
@@ -119,7 +114,6 @@ function carteProduit($p) {
 </head>
 <body>
 
-<!-- NAVBAR -->
 <header class="navbar">
     <div class="nav-container">
         <a href="index.php" class="logo" style="text-decoration:none;">
